@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview — Carreira em Tecnologia Não É Uma Linha Reta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Fundo escuro — emerald profundo */
+  --dark:      #091817;
+  --dark-mid:  #0e2322;
+  --dark-hi:   #104544;
+  --rule:      rgba(255,255,255,.07);
+
+  /* Texto */
+  --text:      #FFFAF5;
+  --text-mid:  #8db5b3;
+  --text-dim:  #3d7876;
+
+  /* Accent principal — Turquoise */
+  --teal:      #249F9C;
+  --teal-dim:  rgba(36,159,156,.15);
+  --teal-glow: rgba(36,159,156,.08);
+  --teal-dark: #037A76;
+
+  /* Highlight máximo — Fuchsia */
+  --fuchsia:      #C11A63;
+  --fuchsia-dim:  rgba(193,26,99,.18);
+  --fuchsia-glow: rgba(193,26,99,.07);
+
+  /* Tipografia */
+  --fd: 'Bricolage Grotesque', sans-serif;
+  --fb: 'Outfit', sans-serif;
+  --fm: 'JetBrains Mono', monospace;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--dark);
+  font-family: var(--fb);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════
+   DECK & TRANSIÇÕES
+══════════════════════════════════════════ */
+.deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+.slide {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transform: scale(1.012);
+  transition: opacity .55s cubic-bezier(.4,0,.2,1),
+              transform .55s cubic-bezier(.4,0,.2,1);
+}
+.slide.active {
+  opacity: 1; pointer-events: all;
+  transform: scale(1);
+}
+
+/* ══════════════════════════════════════════
+   HUD
+══════════════════════════════════════════ */
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: var(--teal);
+  transition: width .45s cubic-bezier(.4,0,.2,1);
+  z-index: 200;
+  box-shadow: 0 0 10px rgba(36,159,156,.4);
+}
+
+.hud-counter {
+  position: fixed; bottom: 24px; right: 36px;
+  font-family: var(--fm); font-size: 11px;
+  letter-spacing: .16em; color: var(--text-dim);
+  z-index: 200;
+}
+
+.hud-notes-btn {
+  position: fixed; top: 22px; right: 22px; z-index: 200;
+  background: rgba(9,24,23,.88); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 6px; padding: 7px 14px;
+  font-family: var(--fm); font-size: 11px; color: var(--text-dim);
+  cursor: pointer; backdrop-filter: blur(12px);
+  transition: color .2s, border-color .2s;
+}
+.hud-notes-btn:hover { color: var(--teal); border-color: rgba(36,159,156,.25); }
+
+.hud-notes-panel {
+  position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+  width: min(720px, 92vw);
+  background: rgba(9,24,23,.97); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px; padding: 22px 28px;
+  font-family: var(--fm); font-size: 12px; color: var(--text-mid);
+  line-height: 1.75; z-index: 199; backdrop-filter: blur(16px);
+  display: none; max-height: 200px; overflow-y: auto;
+}
+.hud-notes-panel.on { display: block; }
+.hud-notes-panel strong { color: var(--teal); }
+
+
+/* ══════════════════════════════════════════
+   SLIDE 1 — CAPA  (FOTO FULL-BLEED)
+   #s1 herda position:absolute;inset:0 do .slide
+   — não sobrescrever position aqui
+══════════════════════════════════════════ */
+#s1 {
+  background: #071514;
+}
+
+.s1-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image: url('fotos/intro-bg3.jpg');
+  background-position: left center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: brightness(.86) contrast(1.05);
+}
+
+.s1-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(9,24,23,0)    24%,
+    rgba(9,24,23,.70)  46%,
+    rgba(9,24,23,.96)  60%,
+    rgba(9,24,23,1)    75%
+  );
+}
+
+.s1-body {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  left: 45%;
+  z-index: 1;
+  padding: 60px 72px 60px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.s1-eyebrow {
+  font-family: var(--fm);
+  font-size: 12px; letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.32);
+}
+
+.s1-main { display: flex; flex-direction: column; }
+
+.s1-title-dark {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(60px, 6.8vw, 90px);
+  line-height: .91; letter-spacing: -.04em;
+  color: var(--text);
+}
+
+.s1-rule {
+  width: 52px; height: 3px;
+  background: var(--teal);
+  margin: 22px 0 19px;
+}
+
+.s1-title-teal {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(60px, 6.8vw, 90px);
+  line-height: .91; letter-spacing: -.04em;
+  color: var(--teal);
+}
+
+.s1-tagline {
+  font-family: var(--fb); font-size: 17px;
+  color: rgba(255,255,255,.3);
+  margin-top: 26px; line-height: 1.65;
+}
+
+.s1-footer { display: flex; flex-direction: column; gap: 7px; }
+
+.s1-name {
+  font-family: var(--fd); font-weight: 800;
+  font-size: 34px; letter-spacing: -.02em;
+  color: var(--text);
+}
+
+.s1-role {
+  font-family: var(--fm); font-size: 13px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.32);
+}
+
+
+/* ══════════════════════════════════════════
+   SLIDE 3 — STATEMENT / FRASE
+══════════════════════════════════════════ */
+#s3 {
+  background: var(--dark);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 72px 10% 72px 10%;
+}
+
+.s3-quote {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(36px, 4.2vw, 54px);
+  line-height: 1.14; letter-spacing: -.03em;
+  color: var(--text);
+  max-width: 840px;
+}
+.s3-quote em {
+  font-style: normal;
+  color: var(--teal);
+}
+.s3-quote .hi {
+  font-style: normal;
+  color: var(--fuchsia);
+}
+
+.s3-attribution {
+  margin-top: 48px;
+  display: flex; align-items: center; gap: 16px;
+}
+.s3-attr-line {
+  width: 36px; height: 2px;
+  background: var(--teal); flex-shrink: 0;
+}
+.s3-attr-name {
+  font-family: var(--fm); font-size: 11px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+
+/* ══════════════════════════════════════════
+   SLIDE 4 — STACK
+══════════════════════════════════════════ */
+#s4 {
+  background: var(--dark);
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+
+.s4-sidebar {
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 60px 44px;
+  border-right: 1px solid var(--rule);
+  background: rgba(255,255,255,.012);
+  gap: 14px;
+}
+
+.s4-label {
+  font-family: var(--fm); font-size: 10px;
+  letter-spacing: .24em; text-transform: uppercase;
+  color: var(--teal);
+}
+
+.s4-heading {
+  font-family: var(--fd); font-weight: 800;
+  font-size: 36px; line-height: 1.06;
+  letter-spacing: -.025em; color: var(--text);
+}
+
+.s4-body {
+  font-family: var(--fb); font-size: 16px;
+  line-height: 1.58; color: var(--text-mid);
+  margin-top: 4px;
+}
+
+.s4-stack {
+  display: flex; flex-direction: column;
+  height: 100%;
+}
+
+.s4-row {
+  flex: 1;
+  display: flex; align-items: center;
+  padding: 0 52px;
+  border-bottom: 1px solid var(--rule);
+  gap: 22px;
+  position: relative;
+  transition: background .18s;
+  cursor: default;
+}
+.s4-row:last-child { border-bottom: none; }
+.s4-row:hover { background: rgba(255,255,255,.018); }
+
+/* Barra teal com opacidade crescente — camadas acumulando */
+.s4-row::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--teal);
+}
+.s4-row:nth-child(1)::before { opacity: .10; }
+.s4-row:nth-child(2)::before { opacity: .18; }
+.s4-row:nth-child(3)::before { opacity: .28; }
+.s4-row:nth-child(4)::before { opacity: .40; }
+.s4-row:nth-child(5)::before { opacity: .54; }
+.s4-row:nth-child(6)::before { opacity: .70; }
+.s4-row:nth-child(7)::before { opacity: 1.00; }
+
+/* Camada ativa (topo = PesoCam) — fuchsia, rompe o padrão teal */
+.s4-row.current {
+  background: var(--fuchsia-glow);
+  border-top: 1px solid var(--fuchsia-dim);
+}
+.s4-row.current::before { background: var(--fuchsia); opacity: 1; }
+.s4-row.current .s4-row-name { color: var(--fuchsia); }
+.s4-row.current .s4-row-num  { color: rgba(193,26,99,.5); }
+.s4-row.current .s4-row-tag  { color: rgba(193,26,99,.45); }
+
+.s4-row-num {
+  font-family: var(--fm); font-size: 11px;
+  letter-spacing: .1em; color: var(--text-dim);
+  width: 22px; flex-shrink: 0;
+}
+.s4-row-name {
+  font-family: var(--fb); font-size: 23px;
+  font-weight: 500; letter-spacing: -.01em;
+  color: rgba(255,255,255,.48);
+  flex: 1;
+}
+.s4-row-tag {
+  font-family: var(--fm); font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+
+/* ══════════════════════════════════════════
+   SLIDE 13 — HIPÓTESE PESOCAM
+══════════════════════════════════════════ */
+#s13 {
+  background: var(--dark);
+  display: grid;
+  grid-template-columns: 1fr 44%;
+}
+
+.s13-body {
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 60px 56px 60px 72px;
+  gap: 0;
+  position: relative;
+}
+
+.s13-anchor {
+  font-family: var(--fd); font-weight: 800;
+  font-size: 200px; line-height: 1;
+  color: var(--teal); opacity: .08;
+  letter-spacing: -.06em;
+  pointer-events: none;
+  margin-bottom: -52px;
+  display: block;
+}
+
+.s13-question {
+  position: relative; z-index: 1;
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(32px, 3.6vw, 46px);
+  line-height: 1.15; letter-spacing: -.03em;
+  color: var(--text);
+}
+.s13-question em {
+  font-style: normal;
+  color: var(--fuchsia);
+}
+
+.s13-label {
+  margin-top: 36px;
+  font-family: var(--fm); font-size: 11px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.s13-image {
+  position: relative; overflow: hidden;
+}
+.s13-image img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  display: block;
+  filter: brightness(.82) contrast(1.08);
+}
+.s13-image::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to right, var(--dark) 0%, transparent 22%);
+}
+.s13-image::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--dark) 0%, transparent 12%),
+    linear-gradient(to top,    var(--dark) 0%, transparent 12%);
+}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+<div class="hud-counter" id="ctr">1 / 4</div>
+<button class="hud-notes-btn" id="nbtn">notas [N]</button>
+<div class="hud-notes-panel" id="npanel"></div>
+
+<div class="deck">
+
+<!-- ════════════════════════════════════════
+     S1 — CAPA
+════════════════════════════════════════ -->
+<div class="slide active" id="s1"
+  data-notes="Entrar em silêncio. Deixar o slide respirar 3–4 segundos. Olhar para a plateia. 'Quando eu comecei em tecnologia, achava que minha carreira seria definida pelas linguagens que eu dominasse. Hoje entendo que ela foi definida pelos problemas que aprendi a resolver.'">
+
+  <div class="s1-bg"></div>
+
+  <div class="s1-body">
+    <div class="s1-eyebrow">8ª Semana de Tecnologia &nbsp;·&nbsp; Senac Maringá &nbsp;·&nbsp; 21.05.2026</div>
+
+    <div class="s1-main">
+      <div class="s1-title-dark">Carreira em<br>tecnologia</div>
+      <div class="s1-rule"></div>
+      <div class="s1-title-teal">não é uma<br>linha reta.</div>
+      <div class="s1-tagline">IA &nbsp;·&nbsp; Visão Computacional<br>Engenharia de Software &nbsp;·&nbsp; Construção de Repertório</div>
+    </div>
+
+    <div class="s1-footer">
+      <div class="s1-name">Bruno Pinha</div>
+      <div class="s1-role">Engenheiro de Software &nbsp;·&nbsp; Pesquisador &nbsp;·&nbsp; Empreendedor</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ════════════════════════════════════════
+     S3 — FRASE
+════════════════════════════════════════ -->
+<div class="slide" id="s3"
+  data-notes="Falar DEVAGAR, palavra por palavra. Pausa de 4 segundos depois. 'Guarda essa frase. A gente volta nela no final.'">
+
+  <div class="s3-quote">
+    "Minha carreira não foi definida<br>
+    pelas <em>linguagens</em> que dominei,<br><br>
+    mas pelos <span class="hi">problemas</span><br>
+    que aprendi a resolver."
+  </div>
+
+  <div class="s3-attribution">
+    <div class="s3-attr-line"></div>
+    <div class="s3-attr-name">Bruno Pinha</div>
+  </div>
+
+</div>
+
+
+<!-- ════════════════════════════════════════
+     S4 — CARREIRA COMO STACK
+════════════════════════════════════════ -->
+<div class="slide" id="s4"
+  data-notes="Apresentar a metáfora central: stack profissional. Assim como um sistema tem camadas — hardware, OS, runtime, aplicação — uma carreira também tem. A camada visível é o cargo atual. O que sustenta tudo está embaixo.">
+
+  <div class="s4-sidebar">
+    <div class="s4-label">a metáfora central</div>
+    <div class="s4-heading">Carreira como<br>stack profissional</div>
+    <div class="s4-body">Assim como um sistema tem camadas, uma carreira também tem. O que aparece é o topo. O que sustenta está embaixo.</div>
+  </div>
+
+  <div class="s4-stack">
+    <div class="s4-row">
+      <span class="s4-row-num">01</span>
+      <span class="s4-row-name">Eletrônica e mundo físico</span>
+      <span class="s4-row-tag">base</span>
+    </div>
+    <div class="s4-row">
+      <span class="s4-row-num">02</span>
+      <span class="s4-row-name">Programação e sistemas reais</span>
+    </div>
+    <div class="s4-row">
+      <span class="s4-row-num">03</span>
+      <span class="s4-row-name">Arquitetura e sistemas legados</span>
+    </div>
+    <div class="s4-row">
+      <span class="s4-row-num">04</span>
+      <span class="s4-row-name">Gestão de projetos e pessoas</span>
+    </div>
+    <div class="s4-row">
+      <span class="s4-row-num">05</span>
+      <span class="s4-row-name">Empreendedorismo</span>
+    </div>
+    <div class="s4-row">
+      <span class="s4-row-num">06</span>
+      <span class="s4-row-name">Pesquisa acadêmica</span>
+    </div>
+    <div class="s4-row current">
+      <span class="s4-row-num">07</span>
+      <span class="s4-row-name">IA · Visão Computacional · PesoCam</span>
+      <span class="s4-row-tag">agora</span>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ════════════════════════════════════════
+     S13 — A HIPÓTESE PESOCAM
+════════════════════════════════════════ -->
+<div class="slide" id="s13"
+  data-notes="Apresentar a hipótese com uma pergunta simples. Deixar no ar 5 segundos. Não responder imediatamente — deixar a plateia pensar. Depois: 'Essa é a pergunta do PesoCam. Parece simples. Mas a engenharia por trás dela é o que vai ocupar os próximos slides.'">
+
+  <div class="s13-body">
+    <span class="s13-anchor">?</span>
+    <div class="s13-question">
+      "E se fosse possível<br>
+      estimar o peso<br>
+      de um bovino<br>
+      <em>sem contato físico?</em>"
+    </div>
+    <div class="s13-label">// visão computacional &nbsp;·&nbsp; profundidade 3D &nbsp;·&nbsp; IA &nbsp;·&nbsp; campo</div>
+  </div>
+
+  <div class="s13-image">
+    <img src="fotos/pesocam/boi-selecao-visao-computacional.png" alt="PesoCam — detecção de bovino">
+  </div>
+
+</div>
+
+</div><!-- /deck -->
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total  = slides.length;
+let cur = 0, notesOn = false;
+
+const prog  = document.getElementById('prog');
+const ctr   = document.getElementById('ctr');
+const np    = document.getElementById('npanel');
+const nbtn  = document.getElementById('nbtn');
+
+function goTo(idx) {
+  if (idx < 0 || idx >= total) return;
+  slides[cur].classList.remove('active');
+  cur = idx;
+  slides[cur].classList.add('active');
+  ctr.textContent = `${cur + 1} / ${total}`;
+  prog.style.width = `${((cur + 1) / total) * 100}%`;
+  const note = slides[cur].dataset.notes || '';
+  np.innerHTML = note
+    ? `<strong>Notas do apresentador:</strong><br><br>${note}`
+    : '<span style="opacity:.3">Sem notas para este slide.</span>';
+}
+
+nbtn.onclick = () => {
+  notesOn = !notesOn;
+  np.classList.toggle('on', notesOn);
+  nbtn.textContent = notesOn ? 'fechar [N]' : 'notas [N]';
+};
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(cur - 1); }
+  if (e.key === 'n' || e.key === 'N') nbtn.onclick();
+  if (e.key === 'Home') goTo(0);
+  if (e.key === 'End')  goTo(total - 1);
+  if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; });
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) dx < 0 ? goTo(cur + 1) : goTo(cur - 1);
+});
+
+goTo(0);
+</script>
+</body>
+</html>
