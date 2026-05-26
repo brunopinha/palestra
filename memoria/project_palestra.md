@@ -11,34 +11,81 @@
 
 Metáfora estrutural: carreira como stack profissional — 7 camadas que se acumulam e convergem no PesoCam.
 
-## Estado atual (sessão 26/05/2026)
+## Estado atual (sessão 26/05/2026 — encerrada)
 
-**Fase:** validação de design — 4 slides prontos em `palestra-preview.html`
+**Fase:** entrega pronta. 24 slides finalizados, deploy ativo, contingências geradas.
 
-**4 slides de validação:**
-- S1 (capa): full-bleed `fotos/intro-bg3.jpg`, corpo posicionado na metade direita (left:45%), títulos Bricolage Grotesque 800
-- S3 (frase-tese): slide escuro puro, "linguagens" em teal, "problemas" em fuchsia
-- S4 (stack): sidebar 300px + 7 linhas; barras teal com opacidade crescente, linha 07 PesoCam quebra em fuchsia
-- S13 (hipótese PesoCam): "?" decorativo teal op.08, "sem contato físico?" em fuchsia, foto bovino coluna direita
+### Entregáveis online (FTP brunopinha.com em `/public_html/palestra/`)
 
-**Bug S1 resolvido:** `#s1` NÃO pode ter `position: relative` ou qualquer override de position — herda `position:absolute; inset:0` do `.slide`. O `.s1-body` usa `position:absolute; top:0; right:0; bottom:0; left:45%`.
+- **`index.html`** — apresentação interativa (renomeada de `palestra-bruno-pinha.html`) — Plano A
+- **`palestra-bruno-pinha.pdf`** — PDF 16:9 (1920×1080) pixel-perfect, 24 páginas, 42MB — Plano B offline
+- **`cue-cards-bruno-pinha.docx`** — 24 cue cards A4 (2 col × 3 lin = 6/página, 4 páginas) — Plano C físico
 
-## Próximos passos
+URLs:
+- https://brunopinha.com/palestra/
+- https://brunopinha.com/palestra/palestra-bruno-pinha.pdf
+- https://brunopinha.com/palestra/cue-cards-bruno-pinha.docx
 
-1. Bruno avalia os 4 slides do `palestra-preview.html` e aprova (ou ajusta) a direção
-2. Construir todos os 24 slides no novo design system, substituindo `palestra-bruno-pinha.html`
-3. Usar `roteiro-palestra-bruno-pinha.md` como referência de conteúdo slide a slide
+### Design system (consolidado)
 
-## Arquivos
+Paleta Emerald/Teal/Fuchsia (`--dark #091817`, `--teal #249F9C`, `--fuchsia #C11A63`), tipografia Bricolage Grotesque (display) + Outfit (body) + JetBrains Mono (labels).
 
-- `palestra-preview.html` — **ATIVO** — 4 slides de validação
-- `palestra-bruno-pinha.html` — **OBSOLETO** — design âmbar anterior, não usar
-- `roteiro-palestra-bruno-pinha.md` — roteiro completo minuto a minuto (conteúdo de referência)
+**Fuchsia (4 momentos):**
+- S3 "problemas"
+- S4 linha 07 PesoCam
+- S13 "sem contato físico?"
+- S17 "IA · câmera · algoritmo" (adicionado a pedido)
+
+**Responsividade:** todo o deck usa `clamp()` em fontes, paddings e gaps — testado para 1280×720 e 1920×1080.
+
+**Bug crítico resolvido (fix sistêmico):** todos os 24 slides (inclusive templates `.tpl-camada`, `.tpl-fourcards`) têm `position: absolute; inset: 0` nos containers internos — garante centralização Y real em qualquer viewport.
+
+### Mapa de fotos (versão final)
+
+| Slide | Foto | Pasta |
+|---|---|---|
+| S1 | intro-bg3.jpg | fotos/ |
+| S9 (Empreendedorismo) | conmaket_50_lojas.JPG | fotos/ |
+| S10 (Mestrado UEM) | mestrao-uem.jpg | fotos/ |
+| S11 (PesoCam pico) | Bruno-Pinha-PesoCam.png | fotos/pesocam/ |
+| S12 (Problema) | bovinos.png | fotos/pesocam/ |
+| S13 (Hipótese) | boi-selecao-visao-computacional.png | fotos/pesocam/ |
+| S14 (Pipeline) | produto-mvp.png (MVP do produto) | fotos/ |
+| S18 (Validações) | logos: gdin.jpg + incubadora-ivaipora.png (Korean Valley) + logo-uem.png | fotos/logos/ |
+| S22 (Networking) | reuniao-de-trabalho-deepfarm.png | fotos/pesocam/ |
+| S23 (Docência) | aula-api-first.png (Bruno ministrando Meet Up) | fotos/ |
+| S24 (Fechamento) | pesocam-logo-branca-fundo-transparente.png + QR via api.qrserver.com | fotos/pesocam/ |
+
+**Logo PesoCam:** versão branca com transparência (`pesocam-logo-branca-fundo-transparente.png`) — substitui a versão tom escuro anterior, melhor pra fundo emerald.
+
+### Templates CSS
+
+- `.tpl-camada` (+ `.with-photo`, `.peak`) — S5–S11 (camadas da stack)
+- `.tpl-fourcards` — S20 (princípios) e S21 (pilares), com overrides #s20 / #s21 (2-col, flat progressivo)
+- `@media print` — força layout 1920×1080 por slide com `page-break-after` para o PDF de contingência
+
+### Scripts auxiliares
+
+- `gen-cue-cards.py` — gera DOCX dos cue cards a partir dos `data-notes` do HTML. Rodar com `python3 gen-cue-cards.py` (requer `python-docx` e `beautifulsoup4`).
+- Geração do PDF: `chromium-browser --headless --print-to-pdf=palestra-bruno-pinha.pdf --no-pdf-header-footer --window-size=1920,1080 file:///root/palestra/palestra-bruno-pinha.html`
+
+## Próximos passos (pré-palco)
+
+Bruno deve, antes do dia 21/05:
+1. Baixar o PDF no notebook que vai usar e guardar offline
+2. Testar a URL `brunopinha.com/palestra/` em fullscreen (tecla F) no notebook
+3. Escanear o QR do S24 com o celular pra confirmar abertura do WhatsApp
+4. Cronometrar a passagem inteira com notas (tecla N) — verificar caber em 60min
+5. Imprimir o DOCX em A4 → cortar nas linhas tracejadas → 24 cue cards físicos
+
+## Arquivos do repositório
+
+- `palestra-bruno-pinha.html` — apresentação 24 slides (single file, CSS embutido)
+- `palestra-bruno-pinha.pdf` — PDF de contingência (42MB, gerado via Chromium)
+- `cue-cards-bruno-pinha.docx` — DOCX dos cue cards (gerado via python-docx)
+- `gen-cue-cards.py` — script gerador dos cue cards
+- `roteiro-palestra-bruno-pinha.md` — roteiro minuto a minuto (referência)
 - `bio-bruno-pinha.md` — bios em múltiplos tamanhos + script do mediador
-
-## Fotos-chave
-
-- `fotos/intro-bg3.jpg` — retrato P&B frontal, mão no queixo, fundo preto. CAPA (S1)
-- `fotos/intro-bg.jpg` / `intro-bg2.jpg` — perfil lateral. Slides de transição/fechamento
-- `fotos/pesocam/boi-selecao-visao-computacional.png` — bovino com bounding box. S13
-- `fotos/conmaket_50_lojas.JPG` — Bruno na loja Conmarket. Slide de empreendedorismo
+- `palestra-preview.html` — referência dos 4 slides originais de validação
+- `fotos/` — todos os assets
+- `memoria/` — contexto de sessão (este arquivo + `feedback_design_autoral.md`)

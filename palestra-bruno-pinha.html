@@ -5,1068 +5,1692 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carreira em Tecnologia Não É Uma Linha Reta — Bruno Pinha</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+
 /* ══════════════════════════════════════════
-   TOKENS — calibrados para retroprojetor
-   ══════════════════════════════════════════ */
+   RESET & TOKENS
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-  --bg:       #0c0a07;   /* warm near-black */
-  --surface:  #161210;
-  --surface2: #201c15;
-  --border:   #332c20;
-  --text:     #ede9df;   /* warm white */
-  --muted:    #8c7f6a;   /* warm grey */
-  --accent:   #e9a820;   /* âmbar — campo + tech */
-  --blue:     #5b9cf5;
-  --orange:   #e8652a;
-  --pink:     #e84d7a;
-  --yellow:   #f5c842;
-  --purple:   #a56af5;
-  --white:    #ffffff;
-  --fd: 'Syne', sans-serif;
+  --dark:      #091817;
+  --dark-mid:  #0e2322;
+  --dark-hi:   #104544;
+  --rule:      rgba(255,255,255,.07);
+  --rule-hi:   rgba(255,255,255,.13);
+
+  --text:      #FFFAF5;
+  --text-mid:  #8db5b3;
+  --text-dim:  #3d7876;
+  --text-low:  rgba(255,250,245,.42);
+
+  --teal:      #249F9C;
+  --teal-dim:  rgba(36,159,156,.15);
+  --teal-glow: rgba(36,159,156,.08);
+  --teal-dark: #037A76;
+
+  --fuchsia:      #C11A63;
+  --fuchsia-dim:  rgba(193,26,99,.18);
+  --fuchsia-glow: rgba(193,26,99,.07);
+
+  --fd: 'Bricolage Grotesque', sans-serif;
   --fb: 'Outfit', sans-serif;
   --fm: 'JetBrains Mono', monospace;
-
-  /* Escala tipográfica — retroprojetor, 10ª fileira */
-  --t-xs:   17px;   /* mono tags, badges */
-  --t-sm:   22px;   /* body secundário */
-  --t-md:   28px;   /* body principal — mínimo legível no fundão */
-  --t-lg:   38px;   /* subtítulos, quotes menores */
-  --t-xl:   56px;   /* títulos H2 */
-  --t-2xl:  76px;   /* títulos H1 */
-  --t-hero: 104px;  /* hero único — capa, quotes grandes */
 }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-html,body{
-  width:100%;height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--fb);
-  overflow:hidden;
-  user-select:none;
+html, body {
+  width: 100%; height: 100%;
+  background: var(--dark);
+  font-family: var(--fb);
+  color: var(--text);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
-
-/* ── DECK ── */
-.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
-
-.slide{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  justify-content:center;align-items:center;
-  padding:56px 96px;
-  opacity:0;pointer-events:none;
-  transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1);
-  transform:translateX(64px);
-  background:var(--bg);
-}
-.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
-.slide.exit{opacity:0;transform:translateX(-64px)}
-.slide>*{position:relative;z-index:1}
-
-/* ── FUNDO GRADE ── */
-.grid-bg{
-  position:absolute;inset:0;pointer-events:none;z-index:0;
-  background-image:
-    repeating-linear-gradient(
-      180deg,
-      rgba(233,168,32,.028) 0px,
-      rgba(233,168,32,.028) 1px,
-      transparent 1px,
-      transparent 52px
-    ),
-    repeating-linear-gradient(
-      180deg,
-      rgba(255,255,255,.012) 0px,
-      rgba(255,255,255,.012) 1px,
-      transparent 1px,
-      transparent 260px
-    );
-}
-
-/* ── BLOBS AMBIENTAIS ── */
-.blob{
-  position:absolute;border-radius:50%;
-  filter:blur(100px);pointer-events:none;z-index:0;
-  opacity:.07;
-  animation:pulse 10s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:.06;transform:scale(1)}50%{opacity:.11;transform:scale(1.05)}}
-
-/* ── CANTOS DECORATIVOS ── */
-.c-tl,.c-br{position:absolute;width:72px;height:72px;pointer-events:none}
-.c-tl{top:24px;left:24px;border-top:1px solid var(--border);border-left:1px solid var(--border);border-radius:3px 0 0 0}
-.c-br{bottom:24px;right:24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);border-radius:0 0 3px 0}
-
-/* ── BADGE SLIDE ── */
-.badge{
-  position:absolute;top:26px;left:40px;
-  font-family:var(--fm);font-size:13px;
-  color:var(--border);letter-spacing:.12em;
-}
-
-/* ── NAVEGAÇÃO ── */
-.nav{
-  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:18px;z-index:100;
-  background:rgba(12,10,7,.92);border:1px solid var(--border);
-  border-radius:50px;padding:10px 22px;backdrop-filter:blur(16px);
-}
-.nav-btn{
-  width:38px;height:38px;border-radius:50%;
-  border:1px solid var(--border);background:var(--surface2);
-  color:var(--text);cursor:pointer;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
-}
-.nav-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-.nav-ctr{
-  font-family:var(--fm);font-size:13px;color:var(--muted);
-  min-width:56px;text-align:center;
-}
-.progress{
-  position:fixed;top:0;left:0;height:4px;
-  background:var(--accent);transition:width .4s cubic-bezier(.4,0,.2,1);
-  z-index:100;box-shadow:0 0 14px var(--accent);
-}
-
-/* ── NOTAS ── */
-.notes-btn{
-  position:fixed;top:20px;right:20px;z-index:100;
-  background:rgba(12,10,7,.92);border:1px solid var(--border);
-  border-radius:8px;padding:8px 16px;
-  font-family:var(--fm);font-size:12px;color:var(--muted);
-  cursor:pointer;backdrop-filter:blur(12px);transition:all .2s;
-}
-.notes-btn:hover{color:var(--accent);border-color:var(--accent)}
-.notes-panel{
-  position:fixed;bottom:86px;left:50%;transform:translateX(-50%);
-  width:min(720px,92vw);
-  background:rgba(12,10,7,.97);border:1px solid var(--border);
-  border-radius:12px;padding:22px 28px;
-  font-family:var(--fm);font-size:13px;color:var(--muted);
-  line-height:1.75;z-index:99;backdrop-filter:blur(16px);
-  display:none;max-height:220px;overflow-y:auto;
-}
-.notes-panel.on{display:block}
-.notes-panel strong{color:var(--accent)}
-
-/* ── HINT TECLADO ── */
-.kb{
-  position:fixed;top:20px;left:50%;transform:translateX(-50%);
-  font-family:var(--fm);font-size:11px;color:var(--border);
-  letter-spacing:.12em;z-index:100;opacity:0;
-  animation:fadeHint 4s 1.8s forwards;
-}
-@keyframes fadeHint{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
 
 /* ══════════════════════════════════════════
-   TIPOGRAFIA — escala auditório
-   ══════════════════════════════════════════ */
-.tag{
-  font-family:var(--fm);font-size:var(--t-xs);
-  letter-spacing:.18em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:18px;
-  display:flex;align-items:center;gap:12px;
-}
-.tag::before{content:'';width:28px;height:2px;background:var(--accent)}
+   DECK
+══════════════════════════════════════════ */
+.deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
 
-.h1{
-  font-family:var(--fd);font-size:var(--t-2xl);
-  font-weight:800;line-height:.97;letter-spacing:-.035em;color:var(--white);
+.slide {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transform: scale(1.012);
+  transition: opacity .55s cubic-bezier(.4,0,.2,1),
+              transform .55s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
 }
-.h2{
-  font-family:var(--fd);font-size:var(--t-xl);
-  font-weight:800;line-height:1.05;letter-spacing:-.025em;color:var(--white);
-}
-.h3{
-  font-family:var(--fd);font-size:var(--t-lg);
-  font-weight:700;line-height:1.15;letter-spacing:-.02em;color:var(--white);
-}
-/* corpo principal — mínimo legível no fundão */
-.body{
-  font-family:var(--fb);font-size:var(--t-md);
-  font-weight:400;line-height:1.55;color:var(--muted);
-  max-width:760px;
-}
-.body-sm{
-  font-family:var(--fb);font-size:var(--t-sm);
-  line-height:1.55;color:var(--muted);
-}
-.mono{
-  font-family:var(--fm);font-size:var(--t-sm);
-  color:var(--accent);
-}
-.quote-big{
-  font-family:var(--fd);font-size:var(--t-xl);
-  font-weight:800;line-height:1.15;letter-spacing:-.025em;
-  color:var(--white);text-align:center;max-width:880px;
-}
-.quote-hero{
-  font-family:var(--fd);font-size:var(--t-hero);
-  font-weight:800;line-height:.93;letter-spacing:-.05em;
-  color:var(--white);
-}
-.accent-grad{
-  background:linear-gradient(135deg,var(--accent) 0%,var(--orange) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-/* ── LAYOUT HELPERS ── */
-.center{text-align:center;align-items:center}
-.left{align-items:flex-start}
-.col{display:flex;flex-direction:column}
-.row{display:flex;flex-direction:row;align-items:center}
-.gap-s{gap:14px}.gap-m{gap:28px}.gap-l{gap:44px}
-
-.divider{width:52px;height:2px;background:var(--accent);margin:22px 0}
-.divider.c{margin:22px auto}
+.slide.active { opacity: 1; pointer-events: all; transform: scale(1); }
 
 /* ══════════════════════════════════════════
-   COMPONENTES
-   ══════════════════════════════════════════ */
-
-/* STACK */
-.stack{display:flex;flex-direction:column-reverse;gap:7px;width:min(580px,84vw)}
-.stack-layer{
-  padding:16px 28px;border-radius:9px;
-  font-family:var(--fm);font-size:var(--t-sm);
-  border-left:3px solid;display:flex;align-items:center;justify-content:space-between;
-  opacity:0;transform:translateY(18px);animation:fadeUp .4s forwards;
-  transition:transform .2s;
+   HUD
+══════════════════════════════════════════ */
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: var(--teal); width: 0;
+  transition: width .45s cubic-bezier(.4,0,.2,1);
+  z-index: 200; box-shadow: 0 0 10px rgba(36,159,156,.4);
 }
-.stack-layer:hover{transform:scale(1.015)}
-.stack-layer .ln{color:var(--white);font-weight:500;font-size:var(--t-sm)}
-.stack-layer .lt{color:var(--muted);font-size:14px}
-.l1{background:rgba(233,168,32,.07);border-color:var(--accent)}
-.l2{background:rgba(91,156,245,.07);border-color:var(--blue)}
-.l3{background:rgba(232,101,42,.07);border-color:var(--orange)}
-.l4{background:rgba(165,106,245,.07);border-color:var(--purple)}
-.l5{background:rgba(245,200,66,.07);border-color:var(--yellow)}
-.l6{background:rgba(232,77,122,.07);border-color:var(--pink)}
-.l7{background:rgba(233,168,32,.13);border-color:var(--accent);box-shadow:0 0 28px rgba(233,168,32,.22)}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-
-/* CARD */
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:16px;padding:36px 44px;
-  max-width:760px;width:100%;position:relative;overflow:hidden;
+.hud-counter {
+  position: fixed; bottom: 24px; right: 36px;
+  font-family: var(--fm); font-size: 11px;
+  letter-spacing: .16em; color: var(--text-dim);
+  z-index: 200;
 }
-.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent)}
-.card.blue::before{background:var(--blue)}
-.card.orange::before{background:var(--orange)}
-.card.purple::before{background:var(--purple)}
-.card.pink::before{background:var(--pink)}
-.card.yellow::before{background:var(--yellow)}
-
-/* HBOX */
-.hbox{
-  border-radius:12px;padding:22px 32px;
-  font-family:var(--fd);font-size:var(--t-md);
-  color:var(--white);font-weight:700;line-height:1.35;
-  max-width:760px;
-  background:rgba(233,168,32,.07);border:1px solid rgba(233,168,32,.22);
+.hud-notes-btn {
+  position: fixed; top: 22px; right: 22px; z-index: 200;
+  background: rgba(9,24,23,.88); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 6px; padding: 7px 14px;
+  font-family: var(--fm); font-size: 11px; color: var(--text-dim);
+  cursor: pointer; backdrop-filter: blur(12px);
+  transition: color .2s, border-color .2s;
 }
-.hbox.blue{background:rgba(91,156,245,.07);border-color:rgba(91,156,245,.25)}
-.hbox.orange{background:rgba(232,101,42,.07);border-color:rgba(232,101,42,.25)}
-.hbox.pink{background:rgba(232,77,122,.07);border-color:rgba(232,77,122,.25)}
-.hbox.purple{background:rgba(165,106,245,.07);border-color:rgba(165,106,245,.25)}
-
-/* FLOW */
-.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
-.fnode{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:14px 20px;
-  font-family:var(--fm);font-size:16px;color:var(--text);
-  white-space:nowrap;transition:all .2s;line-height:1.3;text-align:center;
+.hud-notes-btn:hover { color: var(--teal); border-color: rgba(36,159,156,.25); }
+.hud-notes-panel {
+  position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+  width: min(720px, 92vw);
+  background: rgba(9,24,23,.97); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px; padding: 22px 28px;
+  font-family: var(--fm); font-size: 12px; color: var(--text-mid);
+  line-height: 1.75; z-index: 199; backdrop-filter: blur(16px);
+  display: none; max-height: 220px; overflow-y: auto;
 }
-.fnode:hover{border-color:var(--accent);color:var(--accent)}
-.fnode.hi{border-color:var(--accent);background:rgba(233,168,32,.09);color:var(--accent)}
-.farrow{color:var(--border);font-size:20px;font-family:var(--fm)}
-
-/* TIMELINE */
-.tl{display:flex;flex-direction:column;gap:0;max-width:640px;width:100%}
-.tl-item{display:flex;gap:22px;align-items:flex-start;padding-bottom:22px;position:relative}
-.tl-dot{
-  width:14px;height:14px;border-radius:50%;background:var(--accent);
-  margin-top:5px;flex-shrink:0;position:relative;z-index:1;
-}
-.tl-item:not(:last-child) .tl-dot::after{
-  content:'';position:absolute;top:14px;left:6px;
-  width:2px;height:calc(100% + 22px);background:var(--border);
-}
-.tl-lbl{font-family:var(--fm);font-size:14px;color:var(--accent);letter-spacing:.1em;margin-bottom:5px}
-.tl-txt{font-family:var(--fb);font-size:var(--t-md);color:var(--text);font-weight:500;line-height:1.35}
-
-/* PRINCIPLES GRID */
-.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:860px;width:100%}
-.pitem{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:22px 28px;transition:all .2s;
-}
-.pitem:hover{border-color:var(--blue);transform:translateY(-2px)}
-.pitem strong{
-  font-family:var(--fd);font-size:var(--t-md);color:var(--blue);
-  display:block;margin-bottom:8px;font-weight:700;
-}
-.pitem p{font-family:var(--fb);font-size:var(--t-sm);color:var(--muted);line-height:1.5}
-
-/* PILLS */
-.pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:800px}
-.pill{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:100px;padding:9px 20px;
-  font-family:var(--fm);font-size:15px;color:var(--muted);transition:all .2s;
-}
-.pill:hover,.pill.on{border-color:var(--accent);color:var(--accent);background:rgba(233,168,32,.08)}
-
-/* SPLIT */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:52px;width:100%;max-width:1020px;align-items:start}
-
-/* DOMAIN GRID */
-.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:820px;width:100%}
-.ditem{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:11px;padding:18px 22px;text-align:center;transition:all .2s;
-}
-.ditem:hover{border-color:var(--blue);transform:translateY(-2px)}
-.ditem .di{font-size:26px;margin-bottom:10px}
-.ditem .dl{font-family:var(--fm);font-size:14px;color:var(--muted);letter-spacing:.06em}
+.hud-notes-panel.on { display: block; }
+.hud-notes-panel strong { color: var(--teal); }
 
 /* ══════════════════════════════════════════
-   SLIDE 1 — CAPA
-   ══════════════════════════════════════════ */
-.cover-eyebrow{
-  font-family:var(--fm);font-size:14px;letter-spacing:.2em;
-  color:var(--muted);text-transform:uppercase;margin-bottom:32px;
-  display:flex;align-items:center;gap:16px;
+   PRINT — PDF de contingência (16:9 1920×1080 por slide)
+══════════════════════════════════════════ */
+@page {
+  size: 1920px 1080px;
+  margin: 0;
 }
-.cover-eyebrow::before,.cover-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+@media print {
+  html, body {
+    width: 1920px; height: auto;
+    overflow: visible !important;
+    background: var(--dark);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .progress, .hud-counter, .hud-notes-btn, .hud-notes-panel { display: none !important; }
+  .deck {
+    width: 1920px; height: auto;
+    position: static;
+    overflow: visible;
+  }
+  .slide {
+    position: relative !important;
+    inset: auto !important;
+    width: 1920px !important;
+    height: 1080px !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    overflow: hidden;
+    page-break-after: always;
+    page-break-inside: avoid;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+}
 
-/* CONTATO / FECHAMENTO */
-.contact-grid{
-  display:grid;grid-template-columns:1fr auto;gap:40px;
-  width:100%;max-width:900px;align-items:start;
+/* ══════════════════════════════════════════
+   COMMON UTILITIES
+══════════════════════════════════════════ */
+.fade-in { animation: fadeUp .9s cubic-bezier(.16,1,.3,1) both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.contact-item{
-  display:flex;align-items:center;gap:16px;
-  padding:16px 0;border-bottom:1px solid var(--border);
+
+.eyebrow {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .24em; text-transform: uppercase;
+  color: var(--teal);
 }
-.contact-item:last-child{border-bottom:none}
-.contact-icon{
-  width:44px;height:44px;border-radius:10px;
-  background:rgba(233,168,32,.1);border:1px solid rgba(233,168,32,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;flex-shrink:0;
+.eyebrow-dim { color: var(--text-dim); }
+.rule { width: 56px; height: 3px; background: var(--teal); }
+.rule-sm { width: 36px; height: 2px; background: var(--teal); }
+
+
+/* ══════════════════════════════════════════
+   S1 — CAPA (full-bleed B&W)
+══════════════════════════════════════════ */
+#s1 { background: #071514; }
+.s1-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image: url('fotos/intro-bg3.jpg');
+  background-position: left center;
+  background-size: cover; background-repeat: no-repeat;
+  filter: brightness(.86) contrast(1.05);
 }
-.contact-label{font-family:var(--fm);font-size:13px;color:var(--muted);letter-spacing:.1em;margin-bottom:4px}
-.contact-value{font-family:var(--fd);font-size:var(--t-md);color:var(--white);font-weight:700}
-.contact-value a{color:inherit;text-decoration:none}
-.qr-wrap{
-  background:var(--white);border-radius:16px;padding:16px;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  flex-shrink:0;
+.s1-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to right,
+    rgba(9,24,23,0)    24%,
+    rgba(9,24,23,.70)  46%,
+    rgba(9,24,23,.96)  60%,
+    rgba(9,24,23,1)    75%);
 }
-.qr-label{
-  font-family:var(--fm);font-size:13px;color:var(--bg);
-  letter-spacing:.08em;text-align:center;font-weight:500;
+.s1-body {
+  position: absolute; top:0; right:0; bottom:0; left:45%;
+  z-index: 1; padding: 60px 72px 60px 32px;
+  display: flex; flex-direction: column; justify-content: space-between;
 }
+.s1-eyebrow {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.32);
+}
+.s1-main { display: flex; flex-direction: column; }
+.s1-title-dark, .s1-title-teal {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(60px, 6.8vw, 90px);
+  line-height: .91; letter-spacing: -.04em;
+}
+.s1-title-dark { color: var(--text); }
+.s1-title-teal { color: var(--teal); }
+.s1-rule {
+  width: clamp(48px, 4vw, 64px);
+  height: 3px; background: var(--teal);
+  margin: clamp(18px, 1.8vh, 26px) 0 clamp(15px, 1.6vh, 22px);
+}
+.s1-tagline {
+  font-family: var(--fb);
+  font-size: clamp(15px, 1.4vw, 22px);
+  color: rgba(255,255,255,.3);
+  margin-top: clamp(20px, 2.4vh, 32px);
+  line-height: 1.55;
+}
+.s1-footer { display: flex; flex-direction: column; gap: 8px; }
+.s1-name {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(28px, 2.6vw, 42px);
+  letter-spacing: -.02em; color: var(--text);
+}
+.s1-role {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.32);
+}
+
+
+/* ══════════════════════════════════════════
+   S2 — PERGUNTA CENTRAL (lista de áreas)
+══════════════════════════════════════════ */
+#s2 {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  padding: 72px 8%;
+  align-items: center;
+}
+.s2-list {
+  display: flex; flex-direction: column; gap: 14px;
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.1; letter-spacing: -.03em;
+  color: var(--text-mid);
+}
+.s2-list span { display: block; }
+.s2-list span:nth-child(odd) { color: var(--text); }
+.s2-right {
+  display: flex; flex-direction: column; gap: 22px;
+  padding-left: 6%; border-left: 1px solid var(--rule);
+}
+.s2-question {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(40px, 4.6vw, 64px);
+  line-height: 1.05; letter-spacing: -.035em;
+  color: var(--text);
+}
+.s2-question em {
+  font-style: normal; color: var(--teal);
+}
+
+
+/* ══════════════════════════════════════════
+   S3 — FRASE-TESE
+══════════════════════════════════════════ */
+#s3 {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 72px 10%;
+}
+.s3-quote {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(40px, 4.6vw, 60px);
+  line-height: 1.14; letter-spacing: -.03em;
+  color: var(--text); max-width: 920px;
+}
+.s3-quote em { font-style: normal; color: var(--teal); }
+.s3-quote .hi { font-style: normal; color: var(--fuchsia); }
+.s3-attribution {
+  margin-top: 48px;
+  display: flex; align-items: center; gap: 16px;
+}
+.s3-attr-line { width: 36px; height: 2px; background: var(--teal); flex-shrink: 0; }
+.s3-attr-name {
+  font-family: var(--fm); font-size: 11px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+
+/* ══════════════════════════════════════════
+   S4 — STACK 7 CAMADAS
+══════════════════════════════════════════ */
+#s4 {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  display: grid;
+  grid-template-columns: clamp(280px, 23vw, 460px) 1fr;
+}
+.s4-sidebar {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(48px, 7vh, 84px) clamp(34px, 3vw, 56px);
+  border-right: 1px solid var(--rule);
+  background: rgba(255,255,255,.012);
+  gap: clamp(12px, 1.6vh, 20px);
+}
+.s4-label {
+  font-family: var(--fm);
+  font-size: clamp(10px, .92vw, 14px);
+  letter-spacing: .24em; text-transform: uppercase; color: var(--teal);
+}
+.s4-heading {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(32px, 3.1vw, 52px);
+  line-height: 1.04; letter-spacing: -.025em; color: var(--text);
+}
+.s4-body {
+  font-family: var(--fb);
+  font-size: clamp(15px, 1.3vw, 22px);
+  line-height: 1.55; color: var(--text-mid); margin-top: 6px;
+}
+.s4-stack { display: flex; flex-direction: column-reverse; height: 100%; }
+.s4-row {
+  flex: 1; display: flex; align-items: center;
+  padding: 0 clamp(36px, 3.5vw, 72px);
+  border-bottom: 1px solid var(--rule);
+  gap: clamp(18px, 1.6vw, 30px); position: relative;
+}
+.s4-row:first-child { border-bottom: none; }
+.s4-row::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 8px; background: var(--teal);
+}
+/* Gradiente invertido — base (01, visual bottom) = forte; sobe fadando até 06 (07 quebra o padrão em fuchsia). Fundo da linha + barra acompanham. */
+.s4-row:nth-child(1)        { background: rgba(36,159,156,.20); }
+.s4-row:nth-child(1)::before { opacity: 1.00; }
+.s4-row:nth-child(2)        { background: rgba(36,159,156,.15); }
+.s4-row:nth-child(2)::before { opacity: .82; }
+.s4-row:nth-child(3)        { background: rgba(36,159,156,.11); }
+.s4-row:nth-child(3)::before { opacity: .66; }
+.s4-row:nth-child(4)        { background: rgba(36,159,156,.075); }
+.s4-row:nth-child(4)::before { opacity: .50; }
+.s4-row:nth-child(5)        { background: rgba(36,159,156,.05); }
+.s4-row:nth-child(5)::before { opacity: .36; }
+.s4-row:nth-child(6)        { background: rgba(36,159,156,.028); }
+.s4-row:nth-child(6)::before { opacity: .24; }
+.s4-row:nth-child(7)        { background: transparent; }
+.s4-row:nth-child(7)::before { opacity: .14; }
+.s4-row.current { background: var(--fuchsia-glow); border-bottom: 1px solid var(--fuchsia-dim); }
+.s4-row.current::before { background: var(--fuchsia); opacity: 1; }
+.s4-row.current .s4-row-name { color: var(--fuchsia); }
+.s4-row.current .s4-row-num  { color: rgba(193,26,99,.5); }
+.s4-row.current .s4-row-tag  { color: rgba(193,26,99,.45); }
+.s4-row-num {
+  font-family: var(--fm);
+  font-size: clamp(11px, 1vw, 16px);
+  letter-spacing: .1em; color: var(--text-dim);
+  width: clamp(24px, 2.1vw, 36px); flex-shrink: 0;
+}
+.s4-row-name {
+  font-family: var(--fb);
+  font-size: clamp(22px, 2.25vw, 36px);
+  font-weight: 500; letter-spacing: -.01em;
+  color: rgba(255,255,255,.48); flex: 1;
+}
+.s4-row-tag {
+  font-family: var(--fm);
+  font-size: clamp(10px, .85vw, 13px);
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-dim);
+}
+
+
+/* ══════════════════════════════════════════
+   CAMADA — template S5..S11
+══════════════════════════════════════════ */
+.tpl-camada {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1fr;
+}
+.tpl-camada.with-photo { grid-template-columns: 1.05fr .95fr; }
+
+.cam-body {
+  padding: clamp(48px, 7vh, 88px) clamp(56px, 5vw, 96px);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: clamp(22px, 2.76vh, 34px);
+  position: relative; z-index: 2;
+  max-width: 1440px;
+}
+.cam-num-bg {
+  position: absolute;
+  bottom: clamp(-80px, -5vh, -40px);
+  left: clamp(-30px, -1.5vw, -10px);
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(320px, 38vw, 600px);
+  line-height: 1; letter-spacing: -.08em;
+  color: var(--teal); opacity: .055;
+  pointer-events: none; user-select: none;
+  z-index: 0;
+}
+.cam-eyebrow {
+  font-family: var(--fm);
+  font-size: clamp(13px, 1.02vw, 17px);
+  letter-spacing: .24em; text-transform: uppercase;
+  color: var(--teal);
+}
+.cam-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(58px, 6.7vw, 105px);
+  line-height: .98; letter-spacing: -.035em;
+  color: var(--text); max-width: 1080px;
+}
+.cam-rule {
+  width: clamp(48px, 4.3vw, 82px);
+  height: 3px; background: var(--teal);
+}
+.cam-desc {
+  font-family: var(--fb);
+  font-size: clamp(22px, 1.8vw, 32px);
+  line-height: 1.55;
+  color: var(--text-mid); max-width: 920px;
+}
+.cam-insight {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(24px, 2.04vw, 36px);
+  line-height: 1.35;
+  color: var(--text); max-width: 920px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(20px, 1.7vw, 30px);
+  margin-top: 10px;
+}
+.cam-tags {
+  display: flex; gap: clamp(17px, 1.7vw, 27px);
+  flex-wrap: wrap; margin-top: 10px;
+  font-family: var(--fm);
+  font-size: clamp(12px, .98vw, 16px);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.cam-tags span { position: relative; }
+.cam-tags span + span::before {
+  content: '·';
+  margin-right: clamp(17px, 1.7vw, 27px);
+  color: var(--text-dim);
+}
+
+.cam-photo {
+  position: relative; overflow: hidden;
+  border-left: 1px solid var(--rule);
+}
+.cam-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: brightness(.86) contrast(1.06) saturate(.92);
+}
+.cam-photo::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to right, var(--dark) 0%, transparent 18%);
+}
+.cam-photo::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--dark) 0%, transparent 12%),
+    linear-gradient(to top,    var(--dark) 0%, transparent 12%);
+}
+.cam-photo-caption {
+  position: absolute; bottom: 24px; left: 36px; z-index: 2;
+  font-family: var(--fm); font-size: 10px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(255,250,245,.6);
+}
+
+/* fuchsia variant for S11 (Camada 7 — PesoCam) */
+.tpl-camada.peak .cam-num-bg { color: var(--fuchsia); opacity: .07; }
+.tpl-camada.peak .cam-eyebrow { color: var(--fuchsia); }
+.tpl-camada.peak .cam-rule { background: var(--fuchsia); }
+.tpl-camada.peak .cam-insight { border-left-color: var(--fuchsia); }
+
+
+/* ══════════════════════════════════════════
+   S12 — O PROBLEMA (split: text + bovinos)
+══════════════════════════════════════════ */
+#s12 { background: var(--dark); position: absolute; inset: 0; display: grid; grid-template-columns: 1.1fr .9fr; }
+.s12-body {
+  padding: clamp(48px, 7vh, 84px) clamp(40px, 4vw, 72px) clamp(48px, 7vh, 84px) clamp(56px, 5vw, 96px);
+  display: flex; flex-direction: column; justify-content: center;
+  gap: clamp(22px, 2.76vh, 34px);
+}
+#s12 .eyebrow { font-size: clamp(13px, 1.02vw, 17px); }
+.s12-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(58px, 6vw, 82px);
+  line-height: 1; letter-spacing: -.035em;
+  color: var(--text);
+}
+.s12-title em { font-style: normal; color: var(--teal); }
+.s12-desc {
+  font-family: var(--fb);
+  font-size: clamp(22px, 1.8vw, 32px);
+  line-height: 1.55; color: var(--text-mid);
+  max-width: 680px;
+}
+.s12-callout {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(24px, 2.04vw, 36px);
+  line-height: 1.4;
+  color: var(--text); max-width: 680px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(20px, 1.7vw, 30px);
+}
+.s12-image { position: relative; overflow: hidden; }
+.s12-image img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: brightness(.78) contrast(1.06) saturate(.82);
+}
+.s12-image::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to right, var(--dark) 0%, transparent 22%);
+}
+.s12-image::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--dark) 0%, transparent 12%),
+    linear-gradient(to top,    var(--dark) 0%, transparent 12%);
+}
+
+
+/* ══════════════════════════════════════════
+   S13 — HIPÓTESE
+══════════════════════════════════════════ */
+#s13 { background: var(--dark); position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 44%; }
+.s13-body {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(48px, 7vh, 84px) clamp(40px, 4vw, 72px) clamp(48px, 7vh, 84px) clamp(56px, 5vw, 96px);
+  position: relative;
+}
+.s13-anchor {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(220px, 22vw, 340px);
+  line-height: 1;
+  color: var(--teal); opacity: .08;
+  letter-spacing: -.06em; pointer-events: none;
+  margin-bottom: clamp(-90px, -6vh, -56px);
+}
+.s13-question {
+  position: relative; z-index: 1;
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(38px, 4.3vw, 64px);
+  line-height: 1.15; letter-spacing: -.03em;
+  color: var(--text);
+}
+.s13-question em { font-style: normal; color: var(--fuchsia); }
+.s13-label {
+  margin-top: clamp(28px, 3.5vh, 44px);
+  font-family: var(--fm);
+  font-size: clamp(13px, 1.02vw, 17px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.s13-image { position: relative; overflow: hidden; }
+.s13-image img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: brightness(.82) contrast(1.08);
+}
+.s13-image::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to right, var(--dark) 0%, transparent 22%);
+}
+.s13-image::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--dark) 0%, transparent 12%),
+    linear-gradient(to top,    var(--dark) 0%, transparent 12%);
+}
+
+
+/* ══════════════════════════════════════════
+   S14 — PIPELINE (4 ETAPAS)
+══════════════════════════════════════════ */
+#s14 {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: 60px 72px;
+  justify-content: center; gap: 36px;
+}
+.s14-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(24px, 3vw, 56px);
+}
+.s14-titlewrap { display: flex; flex-direction: column; gap: clamp(10px, 1.2vh, 16px); max-width: 880px; }
+.s14-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(40px, 4.4vw, 60px);
+  line-height: 1.02; letter-spacing: -.035em;
+  color: var(--text);
+}
+.s14-title em { font-style: normal; color: var(--teal); }
+.s14-product {
+  display: flex; flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(6px, .8vh, 10px);
+  flex-shrink: 0;
+}
+.s14-product img {
+  height: clamp(140px, 19vh, 220px);
+  width: auto; display: block;
+  filter: brightness(.96) contrast(1.05);
+}
+.s14-product-tag {
+  font-family: var(--fm);
+  font-size: clamp(10px, .85vw, 13px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.s14-pipeline {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 18px; position: relative;
+}
+.s14-step {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--teal);
+  padding: 26px 24px; display: flex; flex-direction: column; gap: 12px;
+  min-height: 220px; position: relative;
+}
+/* sequência do pipeline — tinta flat progressiva, captura → resultado */
+.s14-step:nth-child(1) { background: rgba(36,159,156,.04); border-left-color: rgba(36,159,156,.30); }
+.s14-step:nth-child(2) { background: rgba(36,159,156,.08); border-left-color: rgba(36,159,156,.55); }
+.s14-step:nth-child(3) { background: rgba(36,159,156,.13); border-left-color: rgba(36,159,156,.80); }
+.s14-step:nth-child(4) { background: rgba(36,159,156,.18); border-left-color: var(--teal); }
+.s14-step::after {
+  content: '→';
+  position: absolute; right: -16px; top: 50%; transform: translateY(-50%);
+  font-family: var(--fm); font-size: 22px;
+  color: var(--text-dim); z-index: 3;
+}
+.s14-step:last-child::after { display: none; }
+.s14-step-num {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1.05vw, 17px);
+  letter-spacing: .22em; color: var(--teal);
+}
+.s14-step-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(23px, 2.1vw, 34px);
+  line-height: 1.1; letter-spacing: -.02em; color: var(--text);
+}
+.s14-step-desc {
+  font-family: var(--fb);
+  font-size: clamp(17px, 1.52vw, 25px);
+  line-height: 1.55; color: var(--text-mid);
+}
+.s14-footnote {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 15px);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+
+/* ══════════════════════════════════════════
+   S15 — POR QUE É DIFÍCIL (lista de fricções)
+══════════════════════════════════════════ */
+#s15 { background: var(--dark); position: absolute; inset: 0; padding: 64px 72px; display: flex; flex-direction: column; justify-content: center; gap: 36px; }
+.s15-header { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
+.s15-title { font-family: var(--fd); font-weight: 800; font-size: clamp(40px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.035em; color: var(--text); }
+.s15-title em { font-style: normal; color: var(--teal); }
+.s15-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.s15-card {
+  border: 1px solid var(--rule);
+  padding: 24px 24px; display: flex; flex-direction: column; gap: 10px;
+  border-top: 2px solid var(--teal-dim);
+}
+/* sequência em leitura: 6 cards com tinta flat progressiva */
+.s15-card:nth-child(1) { background: rgba(36,159,156,.04); border-top-color: rgba(36,159,156,.25); }
+.s15-card:nth-child(2) { background: rgba(36,159,156,.07); border-top-color: rgba(36,159,156,.40); }
+.s15-card:nth-child(3) { background: rgba(36,159,156,.10); border-top-color: rgba(36,159,156,.55); }
+.s15-card:nth-child(4) { background: rgba(36,159,156,.13); border-top-color: rgba(36,159,156,.70); }
+.s15-card:nth-child(5) { background: rgba(36,159,156,.16); border-top-color: rgba(36,159,156,.85); }
+.s15-card:nth-child(6) { background: rgba(36,159,156,.19); border-top-color: var(--teal); }
+.s15-card-num {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .22em; color: var(--teal);
+}
+.s15-card-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(22px, 1.95vw, 32px);
+  letter-spacing: -.02em; line-height: 1.15; color: var(--text);
+}
+.s15-card-desc {
+  font-family: var(--fb);
+  font-size: clamp(17px, 1.5vw, 25px);
+  line-height: 1.55; color: var(--text-mid);
+}
+.s15-closer {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(20px, 1.7vw, 28px);
+  line-height: 1.4; color: var(--text);
+  max-width: 980px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(18px, 1.5vw, 28px);
+}
+
+
+/* ══════════════════════════════════════════
+   S16 — 9 DOMÍNIOS
+══════════════════════════════════════════ */
+#s16 { background: var(--dark); position: absolute; inset: 0; padding: 64px 72px; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+.s16-header { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
+.s16-title { font-family: var(--fd); font-weight: 800; font-size: clamp(40px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.035em; color: var(--text); }
+.s16-title em { font-style: normal; color: var(--teal); }
+.s16-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.s16-cell {
+  background: var(--dark);
+  padding: 28px 26px;
+  display: flex; flex-direction: column; gap: 10px; min-height: 130px;
+}
+.s16-cell-num {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .22em; color: var(--teal);
+}
+.s16-cell-name {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(22px, 2vw, 33px);
+  letter-spacing: -.02em; line-height: 1.12; color: var(--text);
+}
+.s16-cell-tag {
+  font-family: var(--fm);
+  font-size: clamp(11px, .92vw, 14px);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--text-dim); margin-top: auto;
+}
+.s16-callout {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(20px, 1.75vw, 30px);
+  line-height: 1.4; color: var(--text);
+  max-width: 980px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(18px, 1.5vw, 28px);
+}
+
+
+/* ══════════════════════════════════════════
+   S17 — ENGENHARIA CONECTA
+══════════════════════════════════════════ */
+#s17 { background: var(--dark); position: absolute; inset: 0; padding: clamp(56px, 8vh, 96px) 10%; display: flex; flex-direction: column; justify-content: center; gap: clamp(28px, 3.5vh, 44px); }
+.s17-stack { display: flex; flex-direction: column; gap: clamp(8px, 1vh, 14px); }
+.s17-line {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(41px, 4.6vw, 64px);
+  line-height: 1.15; letter-spacing: -.03em;
+  color: var(--text-dim);
+}
+.s17-line em { font-style: normal; color: var(--teal); }
+.s17-line em.hi { color: var(--fuchsia); }
+.s17-line.final { color: var(--text); margin-top: clamp(20px, 2.5vh, 32px); }
+.s17-line.final em { color: var(--teal); }
+.s17-attr {
+  font-family: var(--fm);
+  font-size: clamp(13px, 1.05vw, 16px);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: clamp(28px, 3.5vh, 44px);
+}
+
+
+/* ══════════════════════════════════════════
+   S18 — VALIDAÇÕES
+══════════════════════════════════════════ */
+#s18 {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  padding: clamp(44px, 6vh, 72px) clamp(56px, 5vw, 96px);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: clamp(20px, 2.6vh, 32px);
+}
+.s18-header { display: flex; flex-direction: column; gap: clamp(10px, 1.2vh, 16px); max-width: 880px; }
+.s18-title { font-family: var(--fd); font-weight: 800; font-size: clamp(40px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.035em; color: var(--text); }
+.s18-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 1.4vw, 22px); }
+.s18-card {
+  background: rgba(255,255,255,.02); border: 1px solid var(--rule);
+  padding: clamp(22px, 2vw, 32px) clamp(22px, 2vw, 30px);
+  display: flex; flex-direction: column;
+  gap: clamp(12px, 1.4vh, 18px);
+  border-top: 3px solid var(--teal);
+  min-height: clamp(220px, 30vh, 280px);
+}
+.s18-card-logobox {
+  height: clamp(56px, 7vh, 82px);
+  display: flex; align-items: center;
+}
+.s18-card-logobox img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.s18-card-logobox.snow {
+  background: var(--text); border-radius: 6px;
+  padding: clamp(8px, 1vh, 14px) clamp(12px, 1.2vw, 20px);
+  align-self: flex-start;
+}
+.s18-card-name {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(22px, 1.85vw, 30px);
+  letter-spacing: -.02em; line-height: 1.15; color: var(--text);
+}
+.s18-card-desc {
+  font-family: var(--fb);
+  font-size: clamp(17px, 1.5vw, 25px);
+  line-height: 1.55; color: var(--text-mid);
+}
+.s18-card-tag {
+  font-family: var(--fm);
+  font-size: clamp(11px, .92vw, 14px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--teal); margin-top: auto;
+}
+.s18-closer {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(20px, 1.75vw, 30px);
+  line-height: 1.4; color: var(--text);
+  max-width: 980px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(18px, 1.5vw, 28px);
+}
+
+
+/* ══════════════════════════════════════════
+   S19 — IA & VIBE CODING
+══════════════════════════════════════════ */
+#s19 { background: var(--dark); position: absolute; inset: 0; padding: 64px 72px; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+.s19-header { display: flex; flex-direction: column; gap: 14px; max-width: 880px; }
+.s19-title { font-family: var(--fd); font-weight: 800; font-size: clamp(40px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.035em; color: var(--text); }
+.s19-title em { font-style: normal; color: var(--teal); }
+.s19-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 1120px; }
+.s19-side {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--rule);
+  padding: 26px 28px; display: flex; flex-direction: column; gap: 12px;
+  border-left: 3px solid var(--teal);
+}
+.s19-side.warn { border-left-color: var(--teal-dark); background: rgba(36,159,156,.04); }
+.s19-side-label {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .22em; color: var(--teal);
+}
+.s19-side-text {
+  font-family: var(--fb);
+  font-size: clamp(19px, 1.65vw, 28px);
+  line-height: 1.55; color: var(--text-mid);
+}
+.s19-side-text strong { color: var(--text); font-weight: 600; }
+.s19-closer {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(22px, 1.9vw, 32px);
+  line-height: 1.35; color: var(--text);
+  max-width: 980px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(18px, 1.5vw, 28px);
+  margin-top: 4px;
+}
+
+
+/* ══════════════════════════════════════════
+   S20 / S21 — 4 PRINCÍPIOS / 4 PILARES
+══════════════════════════════════════════ */
+.tpl-fourcards {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  padding: clamp(48px, 7vh, 88px) clamp(56px, 5vw, 96px);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: clamp(22px, 3vh, 40px);
+}
+.fc-header { display: flex; flex-direction: column; gap: 14px; max-width: 980px; }
+.fc-eyebrow { font-family: var(--fm); font-size: clamp(11px, .92vw, 14px); letter-spacing: .24em; text-transform: uppercase; color: var(--teal); }
+.fc-title { font-family: var(--fd); font-weight: 800; font-size: clamp(40px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.035em; color: var(--text); }
+.fc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.fc-card { background: rgba(255,255,255,.018); border: 1px solid var(--rule); padding: 26px 24px; display: flex; flex-direction: column; gap: 14px; border-top: 2px solid var(--teal); min-height: 220px; }
+.fc-num { font-family: var(--fm); font-size: 11px; letter-spacing: .22em; color: var(--teal); }
+.fc-name { font-family: var(--fd); font-weight: 800; font-size: 21px; letter-spacing: -.02em; line-height: 1.12; color: var(--text); }
+.fc-desc { font-family: var(--fb); font-size: 15px; line-height: 1.55; color: var(--text-mid); }
+
+/* S20 & S21 overrides — 2 colunas, cards maiores, fundo flat progressivo */
+#s20 .fc-grid, #s21 .fc-grid { grid-template-columns: repeat(2, 1fr); gap: clamp(16px, 1.6vw, 26px); }
+#s20 .fc-card, #s21 .fc-card {
+  min-height: clamp(180px, 28vh, 280px);
+  padding: clamp(26px, 2.5vw, 38px);
+  border-top-width: 2px;
+}
+#s20 .fc-num,  #s21 .fc-num  { font-size: clamp(13px, 1.05vw, 17px); }
+#s20 .fc-name, #s21 .fc-name { font-size: clamp(25px, 2.2vw, 36px); }
+#s20 .fc-desc, #s21 .fc-desc { font-size: clamp(18px, 1.52vw, 25px); }
+/* Flat fill progressivo nos 4 cards */
+#s20 .fc-card:nth-child(1), #s21 .fc-card:nth-child(1) { background: rgba(36,159,156,.04); border-top-color: rgba(36,159,156,.30); }
+#s20 .fc-card:nth-child(2), #s21 .fc-card:nth-child(2) { background: rgba(36,159,156,.09); border-top-color: rgba(36,159,156,.55); }
+#s20 .fc-card:nth-child(3), #s21 .fc-card:nth-child(3) { background: rgba(36,159,156,.14); border-top-color: rgba(36,159,156,.80); }
+#s20 .fc-card:nth-child(4), #s21 .fc-card:nth-child(4) { background: rgba(36,159,156,.19); border-top-color: var(--teal); }
+
+
+/* ══════════════════════════════════════════
+   S22 — NETWORKING
+══════════════════════════════════════════ */
+#s22 {
+  background: var(--dark);
+  position: absolute; inset: 0;
+  padding: clamp(48px, 7vh, 88px) clamp(56px, 5vw, 120px);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: clamp(24px, 3vh, 40px);
+}
+.s22-header { display: flex; flex-direction: column; gap: clamp(12px, 1.5vh, 20px); max-width: 1000px; }
+.s22-eyebrow {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .24em; text-transform: uppercase; color: var(--teal);
+}
+.s22-headline { font-family: var(--fd); font-weight: 800; font-size: clamp(40px, 4.6vw, 64px); line-height: 1.04; letter-spacing: -.035em; color: var(--text); max-width: 1100px; }
+.s22-headline em { font-style: normal; color: var(--teal); }
+.s22-body {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: clamp(24px, 2.4vw, 44px);
+  align-items: stretch;
+}
+.s22-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  gap: clamp(12px, 1.2vw, 18px);
+}
+.s22-item {
+  font-family: var(--fb);
+  font-size: clamp(17px, 1.45vw, 24px);
+  line-height: 1.45; color: var(--text-mid);
+  padding: clamp(18px, 1.6vw, 28px) clamp(20px, 1.8vw, 32px);
+  background: rgba(255,255,255,.018);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--teal);
+  display: flex; align-items: center;
+}
+.s22-photo {
+  display: flex; flex-direction: column;
+  gap: clamp(8px, 1vh, 14px);
+  justify-content: center;
+}
+.s22-photo-frame {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--teal);
+  background: var(--dark-mid);
+  aspect-ratio: 16 / 11;
+}
+.s22-photo-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  filter: brightness(.96) contrast(1.04);
+}
+.s22-photo-caption {
+  font-family: var(--fm);
+  font-size: clamp(11px, .92vw, 14px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+
+/* ══════════════════════════════════════════
+   S23 — DOCÊNCIA (foto perfil + frase)
+══════════════════════════════════════════ */
+#s23 { background: var(--dark); position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1.15fr; }
+.s23-photo { position: relative; overflow: hidden; }
+.s23-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  display: block;
+  filter: brightness(.96) contrast(1.04) saturate(.95);
+}
+.s23-photo::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to right, transparent 68%, var(--dark) 100%);
+}
+.s23-body {
+  padding: clamp(48px, 7vh, 84px) clamp(56px, 5vw, 96px) clamp(48px, 7vh, 84px) clamp(28px, 2.5vw, 48px);
+  display: flex; flex-direction: column; justify-content: center;
+  gap: clamp(22px, 2.6vh, 32px);
+}
+.s23-eyebrow {
+  font-family: var(--fm);
+  font-size: clamp(13px, 1.05vw, 16px);
+  letter-spacing: .24em; text-transform: uppercase; color: var(--teal);
+}
+.s23-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: clamp(46px, 5.3vw, 74px);
+  line-height: 1.02; letter-spacing: -.035em; color: var(--text);
+}
+.s23-title em { font-style: normal; color: var(--teal); }
+.s23-rule { width: clamp(48px, 4.3vw, 72px); height: 3px; background: var(--teal); }
+.s23-desc {
+  font-family: var(--fb);
+  font-size: clamp(21px, 1.8vw, 28px);
+  line-height: 1.55; color: var(--text-mid);
+  max-width: 640px;
+}
+.s23-insight {
+  font-family: var(--fd); font-weight: 700; font-style: italic;
+  font-size: clamp(25px, 2.1vw, 32px);
+  line-height: 1.35; color: var(--text); max-width: 640px;
+  border-left: 3px solid var(--teal);
+  padding-left: clamp(18px, 1.5vw, 28px);
+}
+
+
+/* ══════════════════════════════════════════
+   S24 — FECHAMENTO + QR
+══════════════════════════════════════════ */
+#s24 { background: var(--dark); position: absolute; inset: 0; display: grid; grid-template-columns: 1.25fr .75fr; }
+.s24-left {
+  padding: clamp(48px, 6.5vh, 80px) clamp(40px, 4vw, 72px) clamp(48px, 6.5vh, 80px) clamp(56px, 5vw, 96px);
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: clamp(24px, 3vh, 40px);
+}
+.s24-top { display: flex; flex-direction: column; gap: clamp(14px, 1.8vh, 24px); }
+.s24-eyebrow {
+  font-family: var(--fm);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: .24em; text-transform: uppercase; color: var(--teal);
+}
+.s24-headline { font-family: var(--fd); font-weight: 800; font-size: clamp(38px, 4vw, 56px); line-height: 1.06; letter-spacing: -.035em; color: var(--text); max-width: 760px; }
+.s24-headline em { font-style: normal; color: var(--teal); }
+.s24-thanks { font-family: var(--fd); font-weight: 800; font-size: clamp(56px, 6.4vw, 92px); line-height: .94; letter-spacing: -.04em; color: var(--text); }
+.s24-thanks em { font-style: normal; color: var(--teal); }
+.s24-bottom { display: flex; flex-direction: column; gap: clamp(16px, 2vh, 26px); }
+.s24-rule { width: clamp(48px, 4vw, 64px); height: 3px; background: var(--teal); }
+.s24-contacts {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(6px, .8vh, 10px) clamp(22px, 2vw, 36px);
+  max-width: 680px;
+}
+.s24-contact {
+  display: flex; flex-direction: column;
+  gap: 3px; padding: clamp(6px, .8vh, 10px) 0;
+}
+.s24-contact-label {
+  font-family: var(--fm);
+  font-size: clamp(11px, .92vw, 14px);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.s24-contact-val {
+  font-family: var(--fb);
+  font-size: clamp(17px, 1.45vw, 23px);
+  color: var(--text);
+}
+.s24-right {
+  padding: clamp(48px, 6.5vh, 80px) clamp(40px, 4vw, 72px) clamp(48px, 6.5vh, 80px) clamp(28px, 2.5vw, 48px);
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: flex-end;
+  gap: clamp(20px, 2.6vh, 36px);
+  border-left: 1px solid var(--rule);
+}
+.s24-qr-frame {
+  background: var(--text); border-radius: 8px;
+  padding: clamp(10px, 1vw, 18px);
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(6px, .7vh, 10px);
+}
+.s24-qr-frame img {
+  width: clamp(180px, 17vw, 290px);
+  height: clamp(180px, 17vw, 290px);
+  display: block;
+}
+.s24-qr-caption {
+  font-family: var(--fm);
+  font-size: clamp(10px, .85vw, 13px);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--dark);
+}
+.s24-logo {
+  display: flex; flex-direction: column;
+  gap: clamp(8px, 1vh, 14px); align-items: flex-end;
+}
+.s24-logo img {
+  height: clamp(34px, 3vw, 54px);
+  opacity: .9;
+}
+.s24-logo-tag {
+  font-family: var(--fm);
+  font-size: clamp(10px, .85vw, 13px);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
 </style>
 </head>
 <body>
 
 <div class="progress" id="prog"></div>
-<div class="kb">← → NAVEGAR &nbsp;|&nbsp; N NOTAS &nbsp;|&nbsp; F FULLSCREEN</div>
-<button class="notes-btn" id="nbtn">notas [N]</button>
-<div class="notes-panel" id="npanel"></div>
+<div class="hud-counter" id="ctr">1 / 24</div>
+<button class="hud-notes-btn" id="nbtn">notas [N]</button>
+<div class="hud-notes-panel" id="npanel"></div>
 
 <div class="deck">
 
-<!-- ════════════════════════════════════════
-     S01 — CAPA
-════════════════════════════════════════ -->
-<div class="slide active center col gap-m" id="s1"
-  data-notes="Entrar em silêncio. Deixar o slide respirar 3–4 segundos. Olhar para a plateia. Depois: 'Quando eu comecei em tecnologia, achava que minha carreira seria definida pelas linguagens que eu dominasse. Hoje entendo que ela foi definida pelos problemas que aprendi a resolver.' Pausa. Apresentar o título e dizer que nos próximos 60 minutos vai mostrar como uma trajetória aparentemente não linear tem uma lógica muito clara.">
-  <div class="blob" style="width:550px;height:550px;background:var(--accent);top:-120px;right:-120px;animation-delay:-2s"></div>
-  <div class="blob" style="width:420px;height:420px;background:var(--blue);bottom:-100px;left:-100px;animation-delay:-4s"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-
-  <div class="cover-eyebrow">8ª Semana de Tecnologia &nbsp;·&nbsp; Senac Maringá &nbsp;·&nbsp; Caminho para o Sucesso</div>
-
-  <div style="font-family:var(--fd);font-size:var(--t-hero);font-weight:800;line-height:.93;letter-spacing:-.05em;color:var(--white);text-align:center;margin-bottom:16px">
-    Carreira em<br>tecnologia<br><span class="accent-grad">não é uma linha reta.</span>
-  </div>
-
-  <div class="body-sm" style="text-align:center;max-width:580px;margin-bottom:40px">
-    IA · Visão Computacional · Engenharia de Software · Construção de Repertório
-  </div>
-
-  <div class="row" style="gap:28px;flex-wrap:wrap;justify-content:center;align-items:center">
-    <img src="fotos/brunopinha_perfil_linkedin.png" alt="Bruno Pinha" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);flex-shrink:0">
-    <div class="col" style="align-items:flex-start;gap:6px">
-      <div style="font-family:var(--fd);font-size:32px;font-weight:800;color:var(--white)">Bruno Pinha</div>
-      <div style="font-family:var(--fm);font-size:13px;color:var(--muted);letter-spacing:.1em">Engenheiro de Software · Pesquisador · Empreendedor</div>
+<!-- ══════════ S1 — CAPA ══════════ -->
+<div class="slide active" id="s1"
+  data-notes="Entrar em silêncio. Deixar o slide respirar 3–4 segundos. Olhar para a plateia. 'Quando eu comecei em tecnologia, achava que minha carreira seria definida pelas linguagens que eu dominasse. Hoje entendo que ela foi definida pelos problemas que aprendi a resolver.'">
+  <div class="s1-bg"></div>
+  <div class="s1-body">
+    <div class="s1-eyebrow">8ª Semana de Tecnologia &nbsp;·&nbsp; Senac Maringá &nbsp;·&nbsp; 21.05.2026</div>
+    <div class="s1-main">
+      <div class="s1-title-dark">Carreira em<br>tecnologia</div>
+      <div class="s1-rule"></div>
+      <div class="s1-title-teal">não é uma<br>linha reta.</div>
+      <div class="s1-tagline">IA &nbsp;·&nbsp; Visão Computacional<br>Engenharia de Software &nbsp;·&nbsp; Construção de Repertório</div>
     </div>
-    <div style="width:1px;height:48px;background:var(--border)"></div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 22px;text-align:center">
-      <div style="font-family:var(--fm);font-size:12px;color:var(--accent);letter-spacing:.14em;margin-bottom:4px">21H → 22H</div>
-      <div style="font-family:var(--fb);font-size:16px;color:var(--muted)">Faculdade Senac Maringá</div>
+    <div class="s1-footer">
+      <div class="s1-name">Bruno Pinha</div>
+      <div class="s1-role">Engenheiro de Software &nbsp;·&nbsp; Pesquisador &nbsp;·&nbsp; Empreendedor</div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     S02 — O QUE CONECTA TUDO?
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s2"
-  data-notes="Mostrar o slide em silêncio. Deixar a pergunta pairar 5 segundos. 'Eletrônica, Delphi, gestão, empreendedorismo, mestrado, visão computacional, IA, docência. O que conecta tudo isso? Não é uma linguagem. Não é uma empresa. É uma forma de aprender a resolver problemas.' Essa resposta vai guiar toda a palestra.">
-  <div class="blob" style="width:600px;height:400px;background:var(--blue);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">02 / 24</div>
 
-  <div class="tag">a pergunta central</div>
-  <div class="h2" style="max-width:700px;text-align:center;margin-bottom:8px">O que conecta<br><span class="accent-grad">tudo isso?</span></div>
-  <div class="divider c"></div>
-  <div class="pills">
-    <span class="pill on">Eletrônica</span><span class="pill">Sistemas Embarcados</span>
-    <span class="pill on">Delphi</span><span class="pill">Sistemas Corporativos</span>
-    <span class="pill">Arquitetura</span><span class="pill on">Gestão</span>
-    <span class="pill">Empreendedorismo</span><span class="pill on">Mestrado UEM</span>
-    <span class="pill">Visão Computacional</span><span class="pill on">IA</span>
-    <span class="pill">PesoCam</span><span class="pill">Docência</span>
+<!-- ══════════ S2 — PERGUNTA CENTRAL ══════════ -->
+<div class="slide" id="s2"
+  data-notes="Mostrar 5 segundos em silêncio. 'Eletrônica. Delphi. Sistemas corporativos. Gestão. Empreendedorismo. Mestrado. Visão computacional. IA. Docência.' Pausa. 'O que conecta tudo isso? Não é uma linguagem. Não é uma empresa. É uma forma de aprender a resolver problemas.'">
+  <div class="s2-list">
+    <span>Eletrônica.</span>
+    <span>Delphi &amp; Legados.</span>
+    <span>Sistemas corporativos.</span>
+    <span>Gestão de Projetos.</span>
+    <span>Empreendedorismo.</span>
+    <span>Mestrado.</span>
+    <span>Visão computacional.</span>
+    <span>IA Aplicada.</span>
+    <span>Docência.</span>
   </div>
-  <div class="body" style="text-align:center;margin-top:16px">Não foi uma linha reta. Mas existe uma lógica.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S03 — ABERTURA PROVOCATIVA
-════════════════════════════════════════ -->
-<div class="slide center col" id="s3"
-  data-notes="A frase de abertura mais importante. Falar DEVAGAR. 'Minha carreira não foi definida pelas linguagens que dominei... mas pelos problemas que aprendi a resolver.' Pausa de 4 segundos. Depois: 'Fui projetista eletrônico, programador, gerente, empreendedor, mestrando, fundador de startup. De fora pode parecer disperso. Por dentro, existe uma lógica: cada fase virou uma camada da próxima.'">
-  <div class="blob" style="width:700px;height:700px;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg" style="opacity:.25"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">03 / 24</div>
-
-  <div class="quote-big" style="font-size:var(--t-xl)">
-    "Minha carreira não foi definida<br>pelas <span style="color:var(--accent)">linguagens</span> que dominei,<br><br>
-    mas pelos <span style="color:var(--accent)">problemas</span><br>que aprendi a resolver."
-  </div>
-  <div style="margin-top:44px;font-family:var(--fm);font-size:var(--t-xs);color:var(--muted);letter-spacing:.15em">— Bruno Pinha</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S04 — CARREIRA COMO STACK
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s4"
-  data-notes="Apresentar a metáfora principal: stack profissional. Assim como um sistema tem camadas — hardware, OS, runtime, aplicação — uma carreira também tem. A camada visível é o cargo ou a linguagem atual. O que sustenta tudo está embaixo: raciocínio, repertório, resiliência, comunicação. Ir mostrando cada camada como uma peça que entra na pilha, de baixo para cima.">
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">04 / 24</div>
-
-  <div class="tag">a metáfora central</div>
-  <div class="h2" style="text-align:center;margin-bottom:10px">Carreira como <span class="accent-grad">stack profissional</span></div>
-  <div class="body-sm" style="text-align:center;max-width:560px;margin-bottom:20px">Assim como um sistema tem camadas, uma carreira também tem.<br>O que aparece é o topo. O que sustenta está embaixo.</div>
-
-  <div class="stack">
-    <div class="stack-layer l1" style="animation-delay:.1s"><span class="ln">01 · Eletrônica e mundo físico</span><span class="lt">base</span></div>
-    <div class="stack-layer l2" style="animation-delay:.2s"><span class="ln">02 · Programação e sistemas reais</span><span class="lt"></span></div>
-    <div class="stack-layer l3" style="animation-delay:.3s"><span class="ln">03 · Análise, arquitetura e legados</span><span class="lt"></span></div>
-    <div class="stack-layer l4" style="animation-delay:.4s"><span class="ln">04 · Gestão, projetos e pessoas</span><span class="lt"></span></div>
-    <div class="stack-layer l5" style="animation-delay:.5s"><span class="ln">05 · Empreendedorismo</span><span class="lt"></span></div>
-    <div class="stack-layer l6" style="animation-delay:.6s"><span class="ln">06 · Pesquisa acadêmica</span><span class="lt"></span></div>
-    <div class="stack-layer l7" style="animation-delay:.7s"><span class="ln">07 · IA · Visão Computacional · PesoCam</span><span class="lt">agora</span></div>
+  <div class="s2-right">
+    <div class="eyebrow">a pergunta que guia esta palestra</div>
+    <div class="s2-question">O que <em>conecta</em><br>tudo isso?</div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     S05 — CAMADA 1: ELETRÔNICA
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s5"
-  data-notes="Falar sobre a fase de projetista eletrônico e sistemas embarcados. Essa camada ensinou algo que poucos engenheiros de software têm: o software não vive no vácuo. Existe sensor que mente, alimentação instável, ruído, ambiente hostil, hardware com limitações. Essa visão foi fundamental décadas depois no PesoCam, que opera com câmera 3D em ambiente rural.">
-  <div class="blob" style="width:400px;height:400px;background:var(--accent);bottom:-100px;right:-100px;animation-delay:-1s"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">05 / 24</div>
 
-  <div class="tag">camada 1</div>
-  <div class="h2">Eletrônica<br>e mundo físico</div>
-  <div class="divider"></div>
-  <div class="card" style="max-width:720px">
-    <div class="mono" style="margin-bottom:18px">// antes do código havia o circuito</div>
-    <div class="body">Sensor, ruído, alimentação instável, ambiente hostil, hardware com limitações reais. Essa camada ensina o que nenhuma linguagem ensina: <strong style="color:var(--white)">software roda em contextos reais, com restrições reais.</strong></div>
+<!-- ══════════ S3 — FRASE-TESE ══════════ -->
+<div class="slide" id="s3"
+  data-notes="Falar DEVAGAR, palavra por palavra. Pausa de 4 segundos depois. 'Guarda essa frase. A gente volta nela no final.'">
+  <div class="s3-quote">
+    "Minha carreira não foi definida<br>
+    pelas <em>linguagens</em> que dominei,<br><br>
+    mas pelos <span class="hi">problemas</span><br>
+    que aprendi a resolver."
   </div>
-  <div class="hbox" style="margin-top:10px">Software não é abstração pura.<br>É decisão executando no mundo físico.</div>
+  <div class="s3-attribution">
+    <div class="s3-attr-line"></div>
+    <div class="s3-attr-name">Bruno Pinha</div>
+  </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     S06 — CAMADA 2: PROGRAMAÇÃO
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s6"
-  data-notes="Falar sobre consolidação como programador em Delphi e sistemas corporativos: Publidata, IPM — sistemas de planejamento orçamentário municipal, regras fiscais, tributárias, migrações de dados entre sistemas concorrentes. Programar não era escrever código bonito. Era traduzir a realidade burocrática e legal de prefeituras em sistemas que precisavam funcionar no dia seguinte.">
-  <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-100px;left:-100px;animation-delay:-2s"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">06 / 24</div>
 
-  <div class="tag">camada 2</div>
-  <div class="h2">Programação<br>e sistemas reais</div>
-  <div class="divider"></div>
-  <div class="card blue" style="max-width:720px">
-    <div class="mono" style="margin-bottom:18px;color:var(--blue)">// Delphi · gestão pública · regras de negócio</div>
-    <div class="body">Sistemas de planejamento orçamentário municipal. Regras fiscais e tributárias. Migrações de dados entre sistemas concorrentes. Código que precisava funcionar no dia seguinte porque havia uma prefeitura dependendo dele.</div>
+<!-- ══════════ S4 — STACK 7 CAMADAS ══════════ -->
+<div class="slide" id="s4"
+  data-notes="Apresentar a metáfora central: stack profissional. Assim como um sistema tem camadas — hardware, OS, runtime, aplicação — uma carreira também tem. A camada visível é o cargo atual. O que sustenta tudo está embaixo. 'Deixa eu mostrar minha stack.'">
+  <div class="s4-sidebar">
+    <div class="s4-label">a metáfora central</div>
+    <div class="s4-heading">Carreira como<br>stack profissional</div>
+    <div class="s4-body">Assim como um sistema tem camadas, uma carreira também tem. O que aparece é o topo. O que sustenta está embaixo.</div>
   </div>
-  <div class="hbox blue" style="margin-top:10px">Programar é traduzir regras de negócio<br>em sistemas que precisam funcionar.</div>
+  <div class="s4-stack">
+    <div class="s4-row"><span class="s4-row-num">01</span><span class="s4-row-name">Eletrônica e mundo físico</span><span class="s4-row-tag">base</span></div>
+    <div class="s4-row"><span class="s4-row-num">02</span><span class="s4-row-name">Programação e sistemas reais</span></div>
+    <div class="s4-row"><span class="s4-row-num">03</span><span class="s4-row-name">Arquitetura e sistemas legados</span></div>
+    <div class="s4-row"><span class="s4-row-num">04</span><span class="s4-row-name">Gestão de projetos e pessoas</span></div>
+    <div class="s4-row"><span class="s4-row-num">05</span><span class="s4-row-name">Empreendedorismo</span></div>
+    <div class="s4-row"><span class="s4-row-num">06</span><span class="s4-row-name">Pesquisa acadêmica</span></div>
+    <div class="s4-row current"><span class="s4-row-num">07</span><span class="s4-row-name">IA · Visão Computacional · PesoCam</span><span class="s4-row-tag">agora</span></div>
+  </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     S07 — CAMADA 3: ARQUITETURA
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s7"
-  data-notes="Evolução para análise e arquitetura, especialmente modernização de sistemas legados. Sistemas legados não são vilões — são sistemas que sobreviveram porque resolviam problemas reais. A questão é como evoluir sem quebrar. A CodersWise é o veículo atual para esse trabalho. Área com demanda crescente e muito repertório necessário.">
-  <div class="blob" style="width:400px;height:400px;background:var(--orange);bottom:-100px;right:0;animation-delay:-3s"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">07 / 24</div>
 
-  <div class="tag">camada 3</div>
-  <div class="h2">Arquitetura<br>e sistemas legados</div>
-  <div class="divider"></div>
-  <div class="card orange" style="max-width:720px">
-    <div class="mono" style="margin-bottom:18px;color:var(--orange)">// modernização · integração · evolução sem parar</div>
-    <div class="body">Sistemas legados não são problemas esperando descarte. São patrimônios que sustentam operações críticas. Modernizá-los exige mais do que código limpo — exige entendimento profundo de contexto, risco, dependências e consequências.</div>
+<!-- ══════════ S5 — CAMADA 1: ELETRÔNICA ══════════ -->
+<div class="slide" id="s5"
+  data-notes="'Antes de ser programador, fui projetista eletrônico. Sistemas embarcados, circuitos, sensores. Isso pode parecer distante de engenharia de software. Mas essa camada me ensinou que software não existe no mundo ideal — ele roda em hardware real, com sensores que mentem, alimentação instável, ambiente hostil. Décadas depois, quando projetei o PesoCam, essa camada já estava lá.'">
+  <div class="tpl-camada">
+    <div class="cam-num-bg">01</div>
+    <div class="cam-body">
+      <div class="cam-eyebrow">camada 01 &nbsp;·&nbsp; a base</div>
+      <div class="cam-title">Eletrônica e<br>mundo físico.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Antes de ser programador, projetista eletrônico. Sistemas embarcados, circuitos, sensores, comunicação física — a camada que ensina como o software encontra o mundo real.</div>
+      <div class="cam-insight">"Software não existe no mundo ideal. Ele roda em hardware que falha, sensores que mentem, ambiente que muda."</div>
+      <div class="cam-tags"><span>sensores</span><span>embarcados</span><span>sinal &amp; ruído</span></div>
+    </div>
   </div>
-  <div class="hbox orange" style="margin-top:10px">Código resolve uma parte do problema.<br>Entendimento resolve o problema certo.</div>
 </div>
 
-<!-- ════════════════════════════════════════
-     S08 — CAMADA 4: GESTÃO
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s8"
-  data-notes="Fase de gerência: gerente de software, gerente de projetos, gestor de TI. O aprendizado principal não é sobre ferramentas — é o entendimento de que software envolve pessoas, decisões, negociações, riscos e consequências além do código. Escopo mal definido, cliente que muda de ideia, prazo apertado, equipe desmotivada — esses problemas não se resolvem com tecnologia.">
-  <div class="blob" style="width:400px;height:400px;background:var(--purple);top:-100px;right:-100px;animation-delay:-1.5s"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">08 / 24</div>
 
-  <div class="tag">camada 4</div>
-  <div class="h2">Gestão de projetos<br>e pessoas</div>
-  <div class="divider"></div>
-  <div class="card purple" style="max-width:720px">
-    <div class="mono" style="margin-bottom:18px;color:var(--purple)">// escopo · prazo · risco · comunicação · decisão</div>
-    <div class="body">Gerenciar projetos de software ensina uma verdade incômoda: os problemas mais difíceis raramente são técnicos. São de comunicação, priorização, expectativa, negociação e decisão sob incerteza.</div>
+<!-- ══════════ S6 — CAMADA 2: PROGRAMAÇÃO (DELPHI) ══════════ -->
+<div class="slide" id="s6"
+  data-notes="Aguardar reação ao 'Delphi'. 'Eu sei. Delphi. Mas trabalhei com sistemas de planejamento orçamentário municipal, gestão pública, regras fiscais. Código que precisava funcionar no dia seguinte porque havia uma cidade dependendo dele.' Essa camada deu entendimento de contexto, risco e consequência — vale mais do que conhecer uma linguagem moderna.">
+  <div class="tpl-camada">
+    <div class="cam-num-bg">02</div>
+    <div class="cam-body">
+      <div class="cam-eyebrow">camada 02 &nbsp;·&nbsp; sistemas reais</div>
+      <div class="cam-title">Programação<br>que sustenta cidades.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Muitos anos em Delphi. Sistemas de planejamento orçamentário municipal, gestão pública, regras fiscais e tributárias — código que precisava funcionar no dia seguinte porque uma cidade inteira dependia dele.</div>
+      <div class="cam-insight">"Programar ali não era escrever código bonito. Era traduzir realidade burocrática e legal em sistemas confiáveis."</div>
+      <div class="cam-tags"><span>delphi</span><span>setor público</span><span>contexto · risco · consequência</span></div>
+    </div>
   </div>
-  <div class="hbox purple" style="margin-top:10px">Software é técnico, mas nunca é só técnico.</div>
 </div>
 
-<!-- ════════════════════════════════════════
-     S09 — CAMADA 5: EMPREENDEDORISMO
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s9"
-  data-notes="Trajetória empreendedora: Macro Informática (escola de informática, 500+ alunos, impacto do YouTube no modelo de negócio), Conmarket (minimercados autônomos, 2020–2024, PDV interno), CodersWise (consultoria atual), PesoCam. Aprendizado principal: uma boa solução técnica não se sustenta se não houver dor real, cliente, entrega de valor e modelo de execução.">
-  <div class="blob" style="width:400px;height:400px;background:var(--yellow);bottom:-100px;left:-100px;animation-delay:-2.5s"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">09 / 24</div>
 
-  <div class="tag">camada 5</div>
-  <div class="h2">Empreendedorismo</div>
-  <div class="divider"></div>
+<!-- ══════════ S7 — CAMADA 3: ARQUITETURA / LEGADOS ══════════ -->
+<div class="slide" id="s7"
+  data-notes="'Com o tempo, evolui para análise e arquitetura. A área onde me especializei foi modernização de sistemas legados. Eles acumulam décadas de regras de negócio que às vezes nem estão documentadas — estão na cabeça de quem escreveu o código. Ou de quem já saiu.' Modernizar não é só reescrever — é entender, preservar, refatorar, integrar e evoluir sem parar a operação. É o que faço hoje na CodersWise.">
+  <div class="tpl-camada">
+    <div class="cam-num-bg">03</div>
+    <div class="cam-body">
+      <div class="cam-eyebrow">camada 03 &nbsp;·&nbsp; arquitetura</div>
+      <div class="cam-title">Modernizar o que<br>não pode parar.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Especialização em modernização de sistemas legados — décadas de regra de negócio em código que ninguém documentou. Entender, preservar, refatorar, integrar e evoluir sem parar a operação.</div>
+      <div class="cam-insight">"É um dos trabalhos mais complexos da engenharia de software. Não é só reescrever — é preservar conhecimento que vive no código."</div>
+      <div class="cam-tags"><span>arquitetura</span><span>legados</span><span>coderswise</span></div>
+    </div>
+  </div>
+</div>
 
-  <div class="split" style="gap:44px;max-width:1020px;align-items:center">
-    <div class="col gap-m">
-      <div class="tl">
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="col gap-s"><div class="tl-lbl">Macro Informática</div><div class="tl-txt">Escola de informática · 500+ alunos · mercado em transformação acelerada</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-dot" style="background:var(--blue)"></div>
-          <div class="col gap-s"><div class="tl-lbl" style="color:var(--blue)">Conmarket</div><div class="tl-txt">Minimercados autônomos · PDV interno · operação real 2020–2024</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-dot" style="background:var(--orange)"></div>
-          <div class="col gap-s"><div class="tl-lbl" style="color:var(--orange)">CodersWise</div><div class="tl-txt">Consultoria · arquitetura · modernização de sistemas legados</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-dot" style="background:var(--accent);box-shadow:0 0 14px var(--accent)"></div>
-          <div class="col gap-s"><div class="tl-lbl">PesoCam</div><div class="tl-txt">Visão computacional · pecuária de precisão · agora</div></div>
-        </div>
+
+<!-- ══════════ S8 — CAMADA 4: GESTÃO ══════════ -->
+<div class="slide" id="s8"
+  data-notes="'Chega um momento em que você sai do código e vai para a gestão.' Gerente de software, gerente de projetos, gestor de TI. 'Essa camada me ensinou uma verdade incômoda: os problemas mais difíceis de um projeto de software raramente são técnicos. São de comunicação, escopo, expectativa, cliente, equipe, prazo.' Esses problemas se resolvem com clareza, conversa, decisão e responsabilidade.">
+  <div class="tpl-camada">
+    <div class="cam-num-bg">04</div>
+    <div class="cam-body">
+      <div class="cam-eyebrow">camada 04 &nbsp;·&nbsp; pessoas e projetos</div>
+      <div class="cam-title">O código é fácil.<br>O resto é difícil.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Gerente de software, gerente de projetos, gestor de TI. Os problemas mais difíceis de um projeto raramente são técnicos — são de comunicação, escopo, expectativa, equipe e prazo.</div>
+      <div class="cam-insight">"Esses problemas não se resolvem com tecnologia. Se resolvem com clareza, conversa, decisão e responsabilidade."</div>
+      <div class="cam-tags"><span>liderança</span><span>escopo · prazo · risco</span><span>comunicação</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ S9 — CAMADA 5: EMPREENDEDORISMO ══════════ -->
+<div class="slide" id="s9"
+  data-notes="'Fui empreendedor em diferentes momentos. Tive a Macro Informática — escola que formou mais de 500 alunos. Depois o YouTube cresceu e o modelo morreu. Aprendi sobre mudança de mercado da forma mais concreta possível.' Conmarket — minimercados autônomos, PDV desenvolvido internamente, operação real entre 2020 e 2024. A lição mais difícil: solução técnica não se sustenta sem dor real, cliente disposto a pagar e modelo de execução.">
+  <div class="tpl-camada with-photo">
+    <div class="cam-body">
+      <div class="cam-num-bg">05</div>
+      <div class="cam-eyebrow">camada 05 &nbsp;·&nbsp; risco e execução</div>
+      <div class="cam-title">Empreender é<br>aprender no concreto.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Macro Informática — escola que formou 500+ alunos antes do YouTube esvaziar o modelo. Depois Conmarket — minimercados autônomos com PDV desenvolvido internamente, operados de verdade entre 2020 e 2024.</div>
+      <div class="cam-insight">"Uma boa solução técnica não se sustenta sem dor real, cliente disposto a pagar e modelo de execução que funcione."</div>
+      <div class="cam-tags"><span>macro informática</span><span>conmarket</span><span>produto · operação</span></div>
+    </div>
+    <div class="cam-photo">
+      <img src="fotos/conmaket_50_lojas.JPG" alt="Bruno na loja Conmarket">
+      <div class="cam-photo-caption">// conmarket &nbsp;·&nbsp; minimercados autônomos &nbsp;·&nbsp; 2020–2024</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ S10 — CAMADA 6: MESTRADO ══════════ -->
+<div class="slide" id="s10"
+  data-notes="'Depois de 20 anos de prática, voltei para a academia. Mestrado em Ciência da Computação na UEM.' Muita gente pergunta por quê — a resposta é que a prática mostra onde dói, a pesquisa ajuda a provar, estruturar e validar. São complementares, não concorrentes. 'Para vocês na graduação: academia e mercado não são inimigos. Você pode passar anos no mercado e voltar com muito mais riqueza.'">
+  <div class="tpl-camada with-photo">
+    <div class="cam-body">
+      <div class="cam-num-bg">06</div>
+      <div class="cam-eyebrow">camada 06 &nbsp;·&nbsp; pesquisa</div>
+      <div class="cam-title">Voltar à academia<br>depois de 20 anos.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Mestrado em Ciência da Computação pela UEM, com pesquisa vinculada a visão computacional aplicada ao PesoCam. A prática mostra onde dói. A pesquisa ajuda a provar, estruturar e validar.</div>
+      <div class="cam-insight">"Academia e mercado não são inimigos. Anos de prática tornam o retorno à academia muito mais denso."</div>
+      <div class="cam-tags"><span>uem</span><span>visão computacional</span><span>engenharia de software</span></div>
+    </div>
+    <div class="cam-photo">
+      <img src="fotos/mestrao-uem.jpg" alt="Primeiro dia — UEM · Mestrado em Ciência da Computação">
+      <div class="cam-photo-caption">// primeiro dia &nbsp;·&nbsp; uem &nbsp;·&nbsp; ppg-cc</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ S11 — CAMADA 7: PESOCAM (PICO) ══════════ -->
+<div class="slide" id="s11"
+  data-notes="MOMENTO DE PICO. 'E aqui chegamos na sétima camada. O PesoCam. Ele é, até hoje, o projeto que mais exigiu de mim — porque pediu todas as camadas anteriores ao mesmo tempo: eletrônica, software, arquitetura, gestão, empreendedorismo, pesquisa, IA, visão computacional, hardware, produto, mercado e execução. Ele não nasceu de um insight genial. Nasceu do repertório acumulado.'">
+  <div class="tpl-camada with-photo peak">
+    <div class="cam-body">
+      <div class="cam-num-bg">07</div>
+      <div class="cam-eyebrow">camada 07 &nbsp;·&nbsp; convergência</div>
+      <div class="cam-title">PesoCam.<br>O repertório<br>vira projeto.</div>
+      <div class="cam-rule"></div>
+      <div class="cam-desc">Estimativa de peso bovino sem contato físico — câmera 3D, IA em borda, pecuária de precisão. O projeto que mais exigiu de mim, porque pediu todas as camadas anteriores ao mesmo tempo.</div>
+      <div class="cam-insight">"Ele não nasceu de um insight genial. Ele nasceu do repertório acumulado."</div>
+      <div class="cam-tags"><span>visão computacional</span><span>ia · borda</span><span>agrotech</span></div>
+    </div>
+    <div class="cam-photo">
+      <img src="fotos/pesocam/Bruno-Pinha-PesoCam.png" alt="Bruno com camiseta PesoCam">
+      <div class="cam-photo-caption">// fundador &nbsp;·&nbsp; pesocam</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ S12 — O PROBLEMA ══════════ -->
+<div class="slide" id="s12"
+  data-notes="'Antes de falar de câmera, IA, algoritmo — preciso falar do problema. Na pecuária, peso é informação estratégica: define quanto o bovino vale na venda, dosagem de remédio, ração, momento de abate. E como se pesa hoje? Com balança física. Contenção, curral, mão de obra, deslocamento, estresse — que por si só já afeta o peso aferido. E isso acontece no campo, a quilômetros de cidade, com pouca tecnologia.'">
+  <div class="s12-body">
+    <div class="eyebrow">bloco 3 &nbsp;·&nbsp; o problema real</div>
+    <div class="s12-title">Peso é uma<br>variável <em>central</em><br>na pecuária.</div>
+    <div class="s12-desc">Define valor de venda, dosagem de remédio, ração, momento de abate. Hoje a aferição depende de balança física — contenção, curral, mão de obra, deslocamento.</div>
+    <div class="s12-callout">"E o estresse da contenção, por si só, já afeta o peso aferido."</div>
+  </div>
+  <div class="s12-image">
+    <img src="fotos/pesocam/bovinos.png" alt="Boiada no pasto">
+  </div>
+</div>
+
+
+<!-- ══════════ S13 — HIPÓTESE ══════════ -->
+<div class="slide" id="s13"
+  data-notes="Apresentar a hipótese com uma pergunta simples. Deixar no ar 5 segundos. Não responder imediatamente — deixar a plateia pensar. 'Essa é a pergunta do PesoCam. Parece simples. Mas a engenharia por trás dela é o que vai ocupar os próximos slides.'">
+  <div class="s13-body">
+    <span class="s13-anchor">?</span>
+    <div class="s13-question">
+      "E se fosse possível<br>
+      estimar o peso<br>
+      de um bovino<br>
+      <em>sem contato físico?</em>"
+    </div>
+    <div class="s13-label">// visão computacional &nbsp;·&nbsp; profundidade 3D &nbsp;·&nbsp; IA &nbsp;·&nbsp; campo</div>
+  </div>
+  <div class="s13-image">
+    <img src="fotos/pesocam/boi-selecao-visao-computacional.png" alt="PesoCam — detecção de bovino">
+  </div>
+</div>
+
+
+<!-- ══════════ S14 — PIPELINE ══════════ -->
+<div class="slide" id="s14"
+  data-notes="'O pipeline é esse: o animal passa pela área de captura. A câmera 3D — OAK-D-Pro-W da Luxonis — captura RGB e mapa de profundidade. O dado é processado localmente, sem depender de internet. O modelo de IA estima o peso. O resultado chega para o produtor na hora.' Sem nuvem, sem latência, sem dependência. Edge AI de verdade.">
+  <div class="s14-header">
+    <div class="s14-titlewrap">
+      <div class="eyebrow">arquitetura da hipótese</div>
+      <div class="s14-title">Pipeline: <em>câmera → borda → IA → estimativa</em></div>
+    </div>
+    <div class="s14-product">
+      <img src="fotos/produto-mvp.png" alt="PesoCam MVP — eletrônica do produto">
+      <div class="s14-product-tag">// mvp · pesocam</div>
+    </div>
+  </div>
+  <div class="s14-pipeline">
+    <div class="s14-step">
+      <div class="s14-step-num">01 &nbsp;·&nbsp; captura</div>
+      <div class="s14-step-title">Câmera 3D</div>
+      <div class="s14-step-desc">OAK-D-Pro-W (Luxonis): RGB + mapa de profundidade do animal em movimento.</div>
+    </div>
+    <div class="s14-step">
+      <div class="s14-step-num">02 &nbsp;·&nbsp; borda</div>
+      <div class="s14-step-title">Processamento local</div>
+      <div class="s14-step-desc">Pipeline embarcado, sem internet. Pré-processamento, segmentação, extração de features.</div>
+    </div>
+    <div class="s14-step">
+      <div class="s14-step-num">03 &nbsp;·&nbsp; modelo</div>
+      <div class="s14-step-title">IA estima peso</div>
+      <div class="s14-step-desc">Modelo treinado com pares (imagem 3D, peso de balança) coletados em campo.</div>
+    </div>
+    <div class="s14-step">
+      <div class="s14-step-num">04 &nbsp;·&nbsp; resultado</div>
+      <div class="s14-step-title">Peso para o produtor</div>
+      <div class="s14-step-desc">Estimativa entregue na hora. Sem contato, sem contenção, sem deslocamento.</div>
+    </div>
+  </div>
+  <div class="s14-footnote">// edge ai &nbsp;·&nbsp; sem nuvem &nbsp;·&nbsp; sem latência &nbsp;·&nbsp; sem dependência</div>
+</div>
+
+
+<!-- ══════════ S15 — POR QUE É DIFÍCIL ══════════ -->
+<div class="slide" id="s15"
+  data-notes="'Parece simples quando falo assim. Mas deixa eu mostrar por que não é.' Animal se move. Iluminação varia — sol direto, sombra, entardecer. Poeira, lama, enquadramento imperfeito. Não existe dataset público de bovinos pesados com 3D — cada dado é coletado em campo, com animal real, ao lado de balança de referência, anotado manualmente. A margem de erro não é acadêmica — é decisão econômica.">
+  <div class="s15-header">
+    <div class="eyebrow">parece simples — não é</div>
+    <div class="s15-title">A <em>realidade do campo</em> é o que faz o problema existir.</div>
+  </div>
+  <div class="s15-grid">
+    <div class="s15-card">
+      <div class="s15-card-num">01</div>
+      <div class="s15-card-title">Animal em movimento</div>
+      <div class="s15-card-desc">Captura precisa exigida mesmo sem cooperação do sujeito. Enquadramento nunca é perfeito.</div>
+    </div>
+    <div class="s15-card">
+      <div class="s15-card-num">02</div>
+      <div class="s15-card-title">Iluminação imprevisível</div>
+      <div class="s15-card-desc">Sol direto, sombra, entardecer, contraluz. Variação severa que o modelo precisa absorver.</div>
+    </div>
+    <div class="s15-card">
+      <div class="s15-card-num">03</div>
+      <div class="s15-card-title">Ambiente hostil</div>
+      <div class="s15-card-desc">Poeira, lama, vibração, temperatura. Hardware em condições que não perdoam projeto frágil.</div>
+    </div>
+    <div class="s15-card">
+      <div class="s15-card-num">04</div>
+      <div class="s15-card-title">Dataset não existe</div>
+      <div class="s15-card-desc">Cada par (3D, peso) precisa ser coletado em campo, com animal real, balança de referência, anotação manual.</div>
+    </div>
+    <div class="s15-card">
+      <div class="s15-card-num">05</div>
+      <div class="s15-card-title">Erro tem consequência</div>
+      <div class="s15-card-desc">A margem não é acadêmica — o produtor toma decisão econômica com o número que sai da estimativa.</div>
+    </div>
+    <div class="s15-card">
+      <div class="s15-card-num">06</div>
+      <div class="s15-card-title">Conectividade limitada</div>
+      <div class="s15-card-desc">Operação a quilômetros da cidade. Solução obrigada a funcionar sem internet — edge AI de verdade.</div>
+    </div>
+  </div>
+  <div class="s15-closer">"O produtor precisa de um número confiável o suficiente para tomar uma decisão econômica. Isso é responsabilidade real."</div>
+</div>
+
+
+<!-- ══════════ S16 — 9 DOMÍNIOS ══════════ -->
+<div class="slide" id="s16"
+  data-notes="'O PesoCam cruza nove domínios ao mesmo tempo. E aqui está o ponto central: esses domínios, isolados, não formam um produto. Você pode ter a melhor câmera do mundo, o modelo mais preciso, a ideia mais original. Se não houver engenharia conectando tudo, o projeto não existe.'">
+  <div class="s16-header">
+    <div class="eyebrow">arquitetura do projeto</div>
+    <div class="s16-title">PesoCam cruza <em>nove domínios</em> simultâneos.</div>
+  </div>
+  <div class="s16-grid">
+    <div class="s16-cell"><div class="s16-cell-num">01</div><div class="s16-cell-name">Hardware</div><div class="s16-cell-tag">eletrônica · embarcado</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">02</div><div class="s16-cell-name">Câmera 3D</div><div class="s16-cell-tag">RGB · profundidade</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">03</div><div class="s16-cell-name">Engenharia de software</div><div class="s16-cell-tag">pipeline · arquitetura</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">04</div><div class="s16-cell-name">Inteligência artificial</div><div class="s16-cell-tag">modelos · treinamento</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">05</div><div class="s16-cell-name">Pesquisa acadêmica</div><div class="s16-cell-tag">uem · método</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">06</div><div class="s16-cell-name">Validação de dados</div><div class="s16-cell-tag">campo · referência</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">07</div><div class="s16-cell-name">Mercado</div><div class="s16-cell-tag">pecuária · dor real</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">08</div><div class="s16-cell-name">Produto</div><div class="s16-cell-tag">uso · operação</div></div>
+    <div class="s16-cell"><div class="s16-cell-num">09</div><div class="s16-cell-name">Fomento internacional</div><div class="s16-cell-tag">gdin · coreia</div></div>
+  </div>
+  <div class="s16-callout">"Isolados, esses domínios não formam<br>um produto. É a engenharia que os conecta."</div>
+</div>
+
+
+<!-- ══════════ S17 — ENGENHARIA CONECTA ══════════ -->
+<div class="slide" id="s17"
+  data-notes="Falar DEVAGAR, frase por frase. 'A IA estima. A câmera captura. O algoritmo calcula. Mas é a engenharia que transforma tudo isso em produto confiável.' Pausa longa. 'Inovação não é sobre ter uma ideia boa. Não é sobre usar tecnologia avançada. É sobre construir um sistema capaz de entregar valor de forma confiável.'">
+  <div class="s17-stack">
+    <div class="s17-line">A <em class="hi">IA</em> estima.</div>
+    <div class="s17-line">A <em class="hi">câmera</em> captura.</div>
+    <div class="s17-line">O <em class="hi">algoritmo</em> calcula.</div>
+    <div class="s17-line final">Mas é a <em>engenharia</em> que transforma<br>tudo isso em produto confiável.</div>
+  </div>
+  <div class="s17-attr">— o que eu acredito sobre inovação</div>
+</div>
+
+
+<!-- ══════════ S18 — VALIDAÇÕES ══════════ -->
+<div class="slide" id="s18"
+  data-notes="'Essas validações não vieram do nada. Vieram de projeto real, clareza de proposta, exposição, networking e consistência ao longo do tempo. Esse é o ponto que quero que vocês levem daqui.' GDIN 2026 abriu interlocução com empresas coreanas, incluindo a DeepFarm.net. Incubadora Tecnológica de Ivaiporã no contexto de Agrotech. Pesquisa acadêmica vinculada no mestrado da UEM.">
+  <div class="s18-header">
+    <div class="eyebrow">validações externas</div>
+    <div class="s18-title">O projeto que <em>o mercado e a academia</em> reconheceram.</div>
+  </div>
+  <div class="s18-grid">
+    <div class="s18-card">
+      <div class="s18-card-logobox snow"><img src="fotos/logos/gdin.jpg" alt="GDIN"></div>
+      <div class="s18-card-name">GDIN 2026</div>
+      <div class="s18-card-desc">AI &amp; Digital Transformation Global PoC Support Program — ecossistema coreano de inovação. Interlocução direta com empresas do mercado agrotech.</div>
+      <div class="s18-card-tag">coreia do sul</div>
+    </div>
+    <div class="s18-card">
+      <div class="s18-card-logobox snow"><img src="fotos/logos/incubadora-ivaipora.png" alt="Korean Valley Ivaiporã"></div>
+      <div class="s18-card-name">Korean Valley Ivaiporã</div>
+      <div class="s18-card-desc">Incubação em Agrotech no contexto do programa Korean Valley — operação e mentoria de longo prazo.</div>
+      <div class="s18-card-tag">ivaiporã · pr</div>
+    </div>
+    <div class="s18-card">
+      <div class="s18-card-logobox snow"><img src="fotos/logos/logo-uem.png" alt="UEM PCC"></div>
+      <div class="s18-card-name">UEM · Mestrado</div>
+      <div class="s18-card-desc">Programa de Pós-Graduação em Ciência da Computação — visão computacional e engenharia de software aplicada ao PesoCam.</div>
+      <div class="s18-card-tag">maringá · pr</div>
+    </div>
+  </div>
+  <div class="s18-closer">"Não vieram do nada. Vieram de projeto real, exposição e consistência."</div>
+</div>
+
+
+<!-- ══════════ S19 — IA & VIBE CODING ══════════ -->
+<div class="slide" id="s19"
+  data-notes="'Quero falar sobre IA. Não sobre hype — sobre uso real.' Bruno usa IA intensamente: estruturar ideias, pesquisar, gerar documentação, comparar, revisar, acelerar. 'IA não substitui entendimento. Ela amplifica o entendimento que você já tem.' Se entende o problema → resolve mais rápido. Se não entende → erra mais rápido e com mais confiança. Vibe coding: descrever, IA gera, aceitar sem ler. Parece produtividade, é dívida técnica.">
+  <div class="s19-header">
+    <div class="eyebrow">posição</div>
+    <div class="s19-title">IA <em>amplifica</em> entendimento.<br>Ela não cria entendimento.</div>
+  </div>
+  <div class="s19-grid">
+    <div class="s19-side">
+      <div class="s19-side-label">// uso real</div>
+      <div class="s19-side-text">Estruturar ideias. Pesquisar alternativas. Gerar documentação. Comparar abordagens. Revisar textos. Acelerar o raciocínio. <strong>Ferramenta poderosa que eu não abro mão.</strong></div>
+    </div>
+    <div class="s19-side warn">
+      <div class="s19-side-label">// vibe coding</div>
+      <div class="s19-side-text">Descrever, IA gera, aceitar sem ler. Parece produtividade — <strong>na verdade é acúmulo de dívida técnica que vai cobrar juros depois.</strong></div>
+    </div>
+  </div>
+  <div class="s19-closer">"O diferencial não vai ser saber usar o prompt. Vai ser saber formular o problema, avaliar a resposta, decidir e assumir a responsabilidade."</div>
+</div>
+
+
+<!-- ══════════ S20 — 4 PRINCÍPIOS DA PRÁTICA ══════════ -->
+<div class="slide" id="s20"
+  data-notes="Listar rapidamente os 4 princípios — falar com voz firme, devagar, um a um. Esses são os princípios que guiam a prática de engenharia em todo projeto, não só no PesoCam.">
+  <div class="tpl-fourcards">
+    <div class="fc-header">
+      <div class="fc-eyebrow">princípios que guiam a prática</div>
+      <div class="fc-title">Quatro princípios.<br>Não negociáveis.</div>
+    </div>
+    <div class="fc-grid">
+      <div class="fc-card">
+        <div class="fc-num">01</div>
+        <div class="fc-name">Não terceirizamos entendimento</div>
+        <div class="fc-desc">A IA acelera quem entende. Quem não entende, a IA acelera o erro.</div>
       </div>
-      <div class="hbox orange">Tecnologia só vira negócio<br>quando resolve uma dor real.</div>
-    </div>
-    <img src="fotos/conmaket_50_lojas.JPG" alt="Conmarket" style="width:100%;border-radius:14px;object-fit:cover;max-height:340px;opacity:.92">
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S10 — CAMADA 6: MESTRADO
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s10"
-  data-notes="Retorno ao ambiente acadêmico. Com 20+ anos de prática, o mestrado não é uma fuga do mercado — é uma forma de transformar experiência em método, hipótese e validação. Mensagem para os alunos: a academia e o mercado não são opostos. São complementares. O mestrado pode vir depois de anos de prática e será ainda mais rico.">
-  <div class="blob" style="width:500px;height:500px;background:var(--pink);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">10 / 24</div>
-
-  <div class="tag">camada 6</div>
-  <div class="h2">Retorno à pesquisa</div>
-  <div class="divider c"></div>
-
-  <div class="split" style="gap:48px;max-width:860px">
-    <div class="col gap-s">
-      <div class="mono" style="color:var(--pink)">// prática</div>
-      <div class="body">20+ anos de experiência real. Sistemas que falharam e funcionaram. Decisões difíceis. Produtos que não foram adiante. Aprendizado acumulado no campo.</div>
-    </div>
-    <div class="col gap-s">
-      <div class="mono">// pesquisa</div>
-      <div class="body">Mestrado em Ciência da Computação na UEM. Método científico, hipótese, validação, estado da arte. Transformar experiência em contribuição verificável.</div>
-    </div>
-  </div>
-  <div class="hbox pink" style="margin-top:10px">A prática mostra onde dói.<br>A pesquisa ajuda a provar o caminho.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S11 — CAMADA 7: PESOCAM (CONVERGÊNCIA)
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s11"
-  data-notes="Aqui todas as camadas convergem. O PesoCam não nasceu do nada. Nasceu porque havia eletrônica, engenharia, arquitetura, empreendedorismo, pesquisa e capacidade de execução construídas ao longo de décadas. Quando as camadas se conectam, nasce a possibilidade de inovação real. Não é sorte. É repertório.">
-  <div class="blob" style="width:600px;height:600px;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg" style="opacity:.5"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">11 / 24</div>
-
-  <div class="tag">camada 7 — convergência</div>
-  <div style="font-family:var(--fd);font-size:var(--t-hero);font-weight:800;letter-spacing:-.05em;line-height:1" class="accent-grad">PesoCam</div>
-  <div class="body" style="text-align:center;max-width:560px">Quando eletrônica, engenharia, arquitetura, pesquisa, empreendedorismo e IA se encontram em um problema real.</div>
-  <div class="pills" style="margin-top:10px">
-    <span class="pill on">Hardware</span><span class="pill on">Câmera 3D</span>
-    <span class="pill on">Visão Computacional</span><span class="pill on">IA</span>
-    <span class="pill on">Eng. Software</span><span class="pill on">Pesquisa</span><span class="pill on">Mercado</span>
-  </div>
-  <div class="hbox" style="margin-top:10px">Nada foi perdido. Tudo virou repertório.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S12 — O PROBLEMA ANTES DA SOLUÇÃO
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s12"
-  data-notes="Antes de câmera, IA ou algoritmo — apresentar o problema. Na pecuária, peso é informação estratégica: define compra, venda, nutrição, sanidade, produtividade, resultado econômico. Pesar bovinos no método tradicional tem custo alto: estrutura física, balança, contenção, deslocamento, mão de obra, tempo, estresse animal. E tudo isso acontece no campo.">
-  <div class="blob" style="width:400px;height:400px;background:var(--orange);top:-100px;right:-100px"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">12 / 24</div>
-
-  <div class="tag">o problema antes da solução</div>
-  <div class="h2">Na pecuária,<br>peso é <span style="color:var(--orange)">decisão.</span></div>
-  <div class="divider"></div>
-  <div class="body" style="max-width:680px">Peso define compra, venda, nutrição, sanidade, produtividade e resultado econômico. É uma informação estratégica capturada hoje com estrutura física, contenção, balança, deslocamento, mão de obra, tempo e estresse animal.</div>
-
-  <div class="dgrid" style="grid-template-columns:repeat(3,1fr);max-width:660px;margin-top:16px">
-    <div class="ditem"><div class="di">🏗️</div><div class="dl">Estrutura física</div></div>
-    <div class="ditem"><div class="di">⏱️</div><div class="dl">Tempo e custo</div></div>
-    <div class="ditem"><div class="di">😰</div><div class="dl">Estresse animal</div></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S13 — A HIPÓTESE
-════════════════════════════════════════ -->
-<div class="slide col" id="s13"
-  data-notes="Apresentar a hipótese com uma pergunta simples. Deixar no ar 5 segundos. Não responder imediatamente — deixar a plateia pensar. Depois: 'Essa é a pergunta do PesoCam. Parece simples. Mas a engenharia por trás dela é o que vai ocupar os próximos slides.' A hipótese é o ponto de partida. A execução é o que importa.">
-  <div class="blob" style="width:600px;height:600px;background:var(--blue);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg" style="opacity:.25"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">13 / 24</div>
-
-  <div class="split" style="gap:56px;max-width:1020px;align-items:center">
-    <div class="col" style="gap:24px">
-      <div class="quote-big" style="text-align:left;font-size:var(--t-lg)">
-        "E se fosse possível<br>estimar o peso<br>de um bovino<br><span style="color:var(--accent)">sem contato físico?</span>"
+      <div class="fc-card">
+        <div class="fc-num">02</div>
+        <div class="fc-name">Arquitetura sustenta,<br>não adorna</div>
+        <div class="fc-desc">Decisões estruturais existem para suportar evolução, não para impressionar.</div>
       </div>
-      <div class="mono">// visão computacional · profundidade 3D · IA · campo</div>
-    </div>
-    <img src="fotos/pesocam/boi-selecao-visao-computacional.png" alt="PesoCam — detecção de bovino" style="width:100%;border-radius:12px;border:2px solid rgba(233,168,32,.35);object-fit:cover">
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S14 — PIPELINE EM ALTO NÍVEL
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s14"
-  data-notes="Mostrar o pipeline em alto nível. Campo → captura RGB + profundidade 3D → processamento em borda → pipeline de software → modelos de IA → estimativa de peso → decisão de manejo. A câmera escolhida é a OAK-D-Pro-W da Luxonis — câmera profissional com profundidade estéreo e visão computacional integrada. Existe uma arquitetura, não apenas uma câmera apontada para um boi.">
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">14 / 24</div>
-
-  <div class="tag">a solução em alto nível</div>
-  <div class="h3" style="margin-bottom:28px">Pipeline do PesoCam</div>
-
-  <div class="flow">
-    <div class="fnode">🐄<br>Bovino</div>
-    <div class="farrow">→</div>
-    <div class="fnode hi">📷<br>Câmera 3D<br><span style="font-size:13px;color:var(--muted)">OAK-D-Pro-W</span></div>
-    <div class="farrow">→</div>
-    <div class="fnode">RGB +<br>Profundidade</div>
-    <div class="farrow">→</div>
-    <div class="fnode hi">⚙️<br>Borda<br><span style="font-size:13px;color:var(--muted)">local</span></div>
-    <div class="farrow">→</div>
-    <div class="fnode">Pipeline<br>SW</div>
-    <div class="farrow">→</div>
-    <div class="fnode hi">🧠<br>Modelo<br>IA</div>
-    <div class="farrow">→</div>
-    <div class="fnode">⚖️<br>Estimativa</div>
-    <div class="farrow">→</div>
-    <div class="fnode">📊<br>Decisão</div>
-  </div>
-
-  <div class="body" style="text-align:center;max-width:640px;margin-top:28px">Captura no campo. Processamento local. Estimativa sem depender de conexão estável. Resultado no ponto de manejo.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S15 — POR QUE É DIFÍCIL
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s15"
-  data-notes="Desmistificar: não é só 'colocar câmera e rodar IA'. O animal se move, a iluminação varia, poeira e lama interferem, o enquadramento muda, o dataset precisa ser coletado e anotado em campo com balança de referência, o modelo precisa ter margem de erro aceitável para decisões econômicas reais, o hardware precisa ser robusto para ambiente rural. Cada um desses é um problema real de engenharia.">
-  <div class="blob" style="width:400px;height:400px;background:var(--orange);bottom:-100px;left:-100px"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">15 / 24</div>
-
-  <div class="tag">por que é mais difícil do que parece</div>
-  <div class="h2">Câmera aponta.<br>Mundo <span style="color:var(--orange)">complica.</span></div>
-  <div class="divider"></div>
-
-  <div class="pgrid">
-    <div class="pitem"><strong>Movimento</strong><p>O animal não para. Captura em movimento exige precisão e tolerância a artefatos.</p></div>
-    <div class="pitem"><strong>Ambiente</strong><p>Poeira, lama, variação de luz natural, sombra. O campo não é laboratório.</p></div>
-    <div class="pitem"><strong>Dataset</strong><p>Não existe base pública. Cada dado precisa ser coletado e anotado no campo, com balança de referência.</p></div>
-    <div class="pitem"><strong>Validação</strong><p>A margem de erro precisa ser aceitável para decisões econômicas reais do produtor.</p></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S16 — O SISTEMA POR TRÁS DA IDEIA
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s16"
-  data-notes="PesoCam é um sistema que cruza vários domínios simultaneamente. Não é só IA. Não é só câmera. É integração de domínios que normalmente ficam em times separados. Esse é exatamente o ponto onde o repertório acumulado faz diferença: conseguir conversar com todos esses domínios ao mesmo tempo.">
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">16 / 24</div>
-
-  <div class="tag">o sistema por trás da ideia</div>
-  <div class="h3" style="text-align:center;margin-bottom:28px">PesoCam cruza <span class="accent-grad">nove domínios</span></div>
-
-  <div class="dgrid">
-    <div class="ditem"><div class="di">⚡</div><div class="dl">Físico / Hardware</div></div>
-    <div class="ditem"><div class="di">📷</div><div class="dl">Câmera 3D</div></div>
-    <div class="ditem"><div class="di">💻</div><div class="dl">Eng. de Software</div></div>
-    <div class="ditem"><div class="di">🧠</div><div class="dl">Inteligência Artificial</div></div>
-    <div class="ditem"><div class="di">🔬</div><div class="dl">Pesquisa Acadêmica</div></div>
-    <div class="ditem"><div class="di">📊</div><div class="dl">Validação / Dados</div></div>
-    <div class="ditem"><div class="di">🌾</div><div class="dl">Mercado / Agronegócio</div></div>
-    <div class="ditem"><div class="di">🚀</div><div class="dl">Produto / Execução</div></div>
-    <div class="ditem"><div class="di">🌍</div><div class="dl">Fomento Internacional</div></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S17 — ONDE ENTRA A ENGENHARIA
-════════════════════════════════════════ -->
-<div class="slide center col" id="s17"
-  data-notes="A frase mais importante do bloco técnico. Repetir com ênfase e devagar. 'A IA estima. A câmera captura. O algoritmo calcula. Mas é a engenharia que transforma tudo isso em produto confiável.' Engenharia é a cola. Sem ela, o projeto é uma coleção de partes. Com ela, essas partes se tornam sistema — com arquitetura, pipeline, validação, interface, produto e usuário.">
-  <div class="blob" style="width:600px;height:600px;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg" style="opacity:.25"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">17 / 24</div>
-
-  <div class="quote-big" style="font-size:var(--t-lg)">
-    "A IA <span style="color:var(--muted)">estima.</span><br>
-    A câmera <span style="color:var(--muted)">captura.</span><br>
-    O algoritmo <span style="color:var(--muted)">calcula.</span><br><br>
-    Mas é a <span style="color:var(--accent)">engenharia</span><br>
-    que transforma tudo isso<br>
-    em produto <span style="color:var(--accent)">confiável.</span>"
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S18 — VALIDAÇÕES EXTERNAS
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s18"
-  data-notes="Apresentar as validações externas: GDIN 2026 (ecossistema coreano de inovação), interlocução com DeepFarm.net, incubação na Incubadora Tecnológica de Ivaiporã, mestrado na UEM. Essas não são conquistas para impressionar — são evidências de que quando existe projeto real, clareza, exposição e rede, oportunidades surgem. Não foi golpe de sorte. Foi resultado de construção consistente.">
-  <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-100px;right:-100px"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">18 / 24</div>
-
-  <div class="tag">validações externas</div>
-  <div class="h2">Oportunidades não<br>aparecem do nada.</div>
-  <div class="divider"></div>
-
-  <div class="tl">
-    <div class="tl-item">
-      <div class="tl-dot" style="background:var(--blue)"></div>
-      <div class="col gap-s">
-        <div class="row" style="align-items:center;gap:14px;flex-wrap:wrap">
-          <div class="tl-lbl" style="color:var(--blue)">GDIN 2026 — Coreia do Sul</div>
-          <img src="fotos/logos/gdin.jpg" alt="GDIN" style="height:22px;border-radius:3px;background:#fff;padding:3px 8px;opacity:.88;flex-shrink:0">
-        </div>
-        <div class="tl-txt">AI & Digital Transformation Global PoC Support Program · ecossistema internacional de inovação · interlocução com DeepFarm.net</div>
+      <div class="fc-card">
+        <div class="fc-num">03</div>
+        <div class="fc-name">Automação não substitui responsabilidade</div>
+        <div class="fc-desc">Quem assina pelo resultado continua sendo o engenheiro — sempre.</div>
       </div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-dot"></div>
-      <div class="col gap-s">
-        <div class="tl-lbl">Incubadora Tecnológica de Ivaiporã</div>
-        <div class="tl-txt">Incubação no contexto de Agrotech · validação regional e acesso a rede de suporte</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-dot" style="background:var(--orange)"></div>
-      <div class="col gap-s">
-        <div class="tl-lbl" style="color:var(--orange)">Mestrado UEM</div>
-        <div class="tl-txt">Pesquisa acadêmica ancorada no projeto · validação científica do método e dos resultados</div>
-      </div>
-    </div>
-  </div>
-  <div class="hbox blue" style="max-width:640px">Projeto + clareza + exposição + rede = oportunidade real.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S19 — IA ASSISTIDA
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s19"
-  data-notes="Falar sobre IA de forma honesta. Uso IA intensamente — estruturação, pesquisa, documentação, arquitetura, estratégia, revisão. Mas posição clara: IA não substitui entendimento. Ela amplifica o entendimento que você já tem. Quem usa IA sem entender o problema vai errar mais rápido e com mais confiança — o que é pior. O diferencial não é saber usar o prompt. É saber o que perguntar e como validar a resposta.">
-  <div class="blob" style="width:450px;height:450px;background:var(--accent);bottom:-100px;right:-100px"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">19 / 24</div>
-
-  <div class="tag">ia assistida e responsabilidade técnica</div>
-  <div class="h2">IA não substitui<br><span class="accent-grad">entendimento.</span></div>
-  <div class="divider"></div>
-
-  <div class="split" style="gap:44px;max-width:860px">
-    <div class="col gap-s">
-      <div class="mono">// o que IA faz bem</div>
-      <div class="body">Estruturar ideias. Pesquisar alternativas. Gerar código inicial. Documentar. Comparar abordagens. Acelerar raciocínio.</div>
-    </div>
-    <div class="col gap-s">
-      <div class="mono" style="color:var(--orange)">// o que IA não substitui</div>
-      <div class="body">Entender o problema. Formular a pergunta certa. Avaliar a resposta. Tomar decisões. Validar hipóteses. Assumir responsabilidade técnica.</div>
-    </div>
-  </div>
-
-  <div class="hbox" style="max-width:720px;margin-top:8px">Quem não entende o problema<br>usa IA para errar mais rápido.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S20 — VELOCIDADE SEM CLAREZA
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s20"
-  data-notes="O vibe coding — gerar código sem entender o que está sendo construído — é uma tendência real e perigosa. Engenharia profunda é o contraposto. Não é rejeitar IA: é recusar a terceirizar o entendimento. Os princípios abaixo podem ser apresentados como uma postura profissional, não como uma marca.">
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">20 / 24</div>
-
-  <div class="tag">velocidade sem clareza é débito técnico</div>
-  <div class="h2" style="text-align:center;margin-bottom:10px">
-    Quando ficou mais fácil<br><span class="accent-grad">gerar código,</span><br>
-    ficou mais importante<br>saber o que construir.
-  </div>
-  <div class="divider c"></div>
-
-  <div class="pgrid">
-    <div class="pitem"><strong>// entendimento</strong><p>Não terceirizamos entendimento. Código sem contexto é ruído.</p></div>
-    <div class="pitem"><strong>// arquitetura</strong><p>Arquitetura sustenta, não adorna. Decisões estruturais importam.</p></div>
-    <div class="pitem"><strong>// responsabilidade</strong><p>Automação não substitui responsabilidade técnica e profissional.</p></div>
-    <div class="pitem"><strong>// profundidade</strong><p>Software sério não nasce de improviso. Construímos para durar.</p></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S21 — PARA OS ALUNOS
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s21"
-  data-notes="Virar diretamente para os alunos. Eles não precisam saber onde estarão em 10 anos. O mais importante agora é construir uma base forte. Linguagem é importante, mas fundamentos duram mais. Projetos reais ensinam mais do que fictícios. Comunicação importa. Networking importa. Cada semestre tem uma camada sendo construída, mesmo que invisível agora.">
-  <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-100px;right:-100px"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">21 / 24</div>
-
-  <div class="tag">para quem está construindo</div>
-  <div class="h2">Você não precisa saber<br>onde vai <span class="accent-grad">chegar.</span></div>
-  <div class="divider"></div>
-  <div class="body" style="max-width:680px">Vai ser desenvolvedor, arquiteto, pesquisador, gestor, empreendedor, professor, especialista em IA? Tudo bem não saber ainda. O que importa agora é construir uma base que consiga conectar oportunidades quando elas aparecerem.</div>
-
-  <div class="pgrid" style="margin-top:12px;grid-template-columns:repeat(2,1fr)">
-    <div class="pitem"><strong>Fundamentos</strong><p>Linguagens passam. Raciocínio lógico, estruturas e arquitetura ficam.</p></div>
-    <div class="pitem"><strong>Projetos reais</strong><p>Um projeto real ensina mais do que dez projetos de aula fictícios.</p></div>
-    <div class="pitem"><strong>Comunicação</strong><p>A ideia que não se comunica não existe. Escreva, apresente, publique.</p></div>
-    <div class="pitem"><strong>Resiliência</strong><p>Nenhuma fase é pequena. Cada experiência vira camada de repertório.</p></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S22 — NETWORKING
-════════════════════════════════════════ -->
-<div class="slide center col gap-m" id="s22"
-  data-notes="Networking maduro e prático. Não é aparecer em evento e distribuir cartão. É construir confiança antes da oportunidade existir. Exemplos práticos: participar de eventos como este, conversar com professores, documentar e publicar projetos, participar de comunidades técnicas, dar feedback, aceitar desafios antes de se sentir 100% pronto.">
-  <div class="blob" style="width:500px;height:500px;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg" style="opacity:.25"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">22 / 24</div>
-
-  <div class="quote-big">
-    "Networking não é pedir oportunidade<br>para desconhecido.<br><br>
-    Networking é <span style="color:var(--accent)">construir confiança</span><br>
-    antes da oportunidade existir."
-  </div>
-  <div class="pills" style="margin-top:36px">
-    <span class="pill">Eventos</span><span class="pill">Professores</span><span class="pill">Comunidades</span>
-    <span class="pill">Publicações</span><span class="pill">Projetos documentados</span><span class="pill">Consistência</span>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S23 — A PRÓXIMA CAMADA: DOCÊNCIA
-════════════════════════════════════════ -->
-<div class="slide left col gap-m" id="s23"
-  data-notes="Nova fase como camada natural. O convite para docência na Unicesumar não é ruptura — é extensão do repertório. Quem passa 20+ anos resolvendo problemas reais tem algo a oferecer. Ensinar também é uma forma de aprender. Conectar com o público: 'Vocês são o motivo dessa próxima camada.'">
-  <div class="blob" style="width:400px;height:400px;background:var(--pink);bottom:-100px;right:-100px"></div>
-  <div class="grid-bg"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">23 / 24</div>
-
-  <div class="tag">a próxima camada</div>
-  <div class="h2">Docência:<br>ensinar também é<br><span class="accent-grad">construir futuro.</span></div>
-  <div class="divider"></div>
-
-  <div class="card pink" style="max-width:720px">
-    <div class="body">O convite para lecionar na Unicesumar não é uma ruptura. É mais uma camada. Quem passa anos resolvendo problemas reais tem um repertório que vale ser formalizado, compartilhado e questionado. Ensinar é também uma forma de aprender com mais profundidade.</div>
-  </div>
-
-  <div class="hbox pink" style="max-width:640px;margin-top:10px">Tecnologia se constrói com pessoas.<br>Pessoas se formam com referências reais.</div>
-</div>
-
-<!-- ════════════════════════════════════════
-     S24 — FECHAMENTO + CONTATOS + QR
-════════════════════════════════════════ -->
-<div class="slide center col gap-l" id="s24"
-  data-notes="Fechamento lento e memorável. Pausa antes de falar. Falar a frase devagar: 'Não despreze nenhuma fase da sua jornada. A experiência que hoje parece pequena pode ser exatamente a camada que vai sustentar sua próxima grande oportunidade.' Depois agradecer, mostrar os contatos, pedir para quem quiser continuar a conversa adicionar o WhatsApp. Abrir para perguntas.">
-  <div class="blob" style="width:700px;height:700px;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div class="grid-bg" style="opacity:.18"></div><div class="c-tl"></div><div class="c-br"></div>
-  <div class="badge">24 / 24</div>
-
-  <div class="quote-big" style="font-size:var(--t-lg);margin-bottom:8px">
-    "Não despreze nenhuma fase<br>da sua <span style="color:var(--accent)">jornada.</span><br><br>
-    Ela pode ser a camada que vai<br>sustentar sua próxima<br>
-    <span style="color:var(--accent)">grande oportunidade.</span>"
-  </div>
-
-  <div class="divider c"></div>
-
-  <div class="contact-grid">
-    <div class="col" style="gap:0">
-      <div class="contact-item">
-        <div class="contact-icon">🌐</div>
-        <div class="col gap-s">
-          <div class="contact-label">SITE</div>
-          <div class="contact-value">brunopinha.com</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">💼</div>
-        <div class="col gap-s">
-          <div class="contact-label">LINKEDIN</div>
-          <div class="contact-value">linkedin.com/in/brunopinha7</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon" style="font-size:16px">📧</div>
-        <div class="col gap-s">
-          <div class="contact-label">E-MAIL</div>
-          <div class="contact-value" style="font-size:var(--t-sm)">brunopinha@msn.com <span style="color:var(--muted);font-family:var(--fm);font-size:13px">// sim, @msn 😄</span></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">📱</div>
-        <div class="col gap-s">
-          <div class="contact-label">WHATSAPP</div>
-          <div class="contact-value">(44) 99185-7884</div>
-        </div>
+      <div class="fc-card">
+        <div class="fc-num">04</div>
+        <div class="fc-name">Software sério não nasce de improviso</div>
+        <div class="fc-desc">Velocidade vem de fundamentos. Improviso só funciona em código descartável.</div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="qr-wrap">
-      <div id="qrcode"></div>
-      <div class="qr-label">Scan para<br>WhatsApp</div>
+
+<!-- ══════════ S21 — 4 PILARES PARA OS ALUNOS ══════════ -->
+<div class="slide" id="s21"
+  data-notes="Falar diretamente com a plateia. 'Você vai ser desenvolvedor, arquiteto, pesquisador, gestor, empreendedor, professor, especialista em IA? Tudo bem não saber. Eu não sabia. O que importa agora não é escolher o caminho perfeito. É construir uma base sólida o suficiente para que, quando a oportunidade aparecer, você consiga conectá-la.' Esses quatro pilares valem mais do que dominar qualquer linguagem específica.">
+  <div class="tpl-fourcards">
+    <div class="fc-header">
+      <div class="fc-eyebrow">para vocês, agora</div>
+      <div class="fc-title">Os quatro pilares<br>que sustentam tudo.</div>
+    </div>
+    <div class="fc-grid">
+      <div class="fc-card">
+        <div class="fc-num">01</div>
+        <div class="fc-name">Fundamentos</div>
+        <div class="fc-desc">Algoritmos, dados, redes, sistemas. Não tem atalho. Tudo o que vier por cima depende disso.</div>
+      </div>
+      <div class="fc-card">
+        <div class="fc-num">02</div>
+        <div class="fc-name">Projetos reais</div>
+        <div class="fc-desc">Qualquer problema do seu entorno serve. Documenta. Publica. A perfeição é inimiga do começo.</div>
+      </div>
+      <div class="fc-card">
+        <div class="fc-num">03</div>
+        <div class="fc-name">Comunicação</div>
+        <div class="fc-desc">Escrever, apresentar, conversar com não-técnico. Vale tanto quanto a habilidade técnica.</div>
+      </div>
+      <div class="fc-card">
+        <div class="fc-num">04</div>
+        <div class="fc-name">Resiliência</div>
+        <div class="fc-desc">A carreira é longa. Vai ter erro, troca de área, recomeço. Quem fica é quem aguenta o ciclo.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ S22 — NETWORKING ══════════ -->
+<div class="slide" id="s22"
+  data-notes="'Sobre networking, quero ser direto. Não é aparecer em evento, distribuir cartão e esperar que alguém te ligue. Networking é construir confiança antes da oportunidade existir.' Como? Participando de eventos como esse, conversando com professores, documentando o que aprende, publicando projetos mesmo imperfeitos, participando de comunidades, pedindo feedback, aceitando desafios antes de se sentir 100% pronto. 'A maioria das boas oportunidades da minha vida não veio de candidatura a vaga.'">
+  <div class="s22-header">
+    <div class="s22-eyebrow">como as oportunidades realmente aparecem</div>
+    <div class="s22-headline">Networking é construir <em>confiança</em><br>antes da oportunidade existir.</div>
+  </div>
+  <div class="s22-body">
+    <div class="s22-grid">
+      <div class="s22-item">Participar de eventos como esse. Conversar com professor depois da aula.</div>
+      <div class="s22-item">Documentar o que aprende. Publicar projeto — mesmo imperfeito.</div>
+      <div class="s22-item">Participar de comunidades. Aparecer mais de uma vez.</div>
+      <div class="s22-item">Pedir feedback. Mostrar que está construindo, não só consumindo.</div>
+      <div class="s22-item">Aceitar desafio antes de se sentir 100% pronto.</div>
+      <div class="s22-item">Manter consistência ao longo do tempo. O resto é consequência.</div>
+    </div>
+    <div class="s22-photo">
+      <div class="s22-photo-frame">
+        <img src="fotos/pesocam/reuniao-de-trabalho-deepfarm.png" alt="Reunião com DeepFarm.net">
+      </div>
+      <div class="s22-photo-caption">// evidência &nbsp;·&nbsp; reunião DeepFarm.net &nbsp;·&nbsp; Coreia do Sul</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ S23 — DOCÊNCIA ══════════ -->
+<div class="slide" id="s23"
+  data-notes="'Uma última camada. Fui convidado para lecionar na Unicesumar. Começo no próximo semestre. Não é uma ruptura — é mais uma camada. Quem passa 20 anos resolvendo problemas reais tem um repertório que vale ser formalizado, compartilhado e questionado. Ensinar é também uma das formas mais ricas de aprender. Vocês, na plateia, são o motivo dessa próxima camada.'">
+  <div class="s23-photo"><img src="fotos/aula-api-first.png" alt="Bruno ministrando aula — Meet Up Back-end"></div>
+  <div class="s23-body">
+    <div class="s23-eyebrow">próxima camada</div>
+    <div class="s23-title">Ensinar é também<br>uma forma de <em>aprender</em>.</div>
+    <div class="s23-rule"></div>
+    <div class="s23-desc">Próximo semestre: ingresso no corpo docente da Unicesumar. Não é ruptura — é mais uma camada. 20 anos de prática viram repertório que vale ser formalizado, compartilhado e questionado.</div>
+    <div class="s23-insight">"Vocês, na plateia, são o motivo dessa próxima camada."</div>
+  </div>
+</div>
+
+
+<!-- ══════════ S24 — FECHAMENTO + CONTATOS ══════════ -->
+<div class="slide" id="s24"
+  data-notes="Pausa antes de falar. Olhar para a plateia. 'Quando comecei essa palestra, disse que minha carreira não foi definida pelas linguagens que dominei, mas pelos problemas que aprendi a resolver. Cada fase foi uma camada. Nenhuma foi inútil.' Devagar: 'Não despreze nenhuma fase da sua jornada. Ela pode ser a camada que vai sustentar sua próxima grande oportunidade.' Pausa longa. 'Obrigado.' Mencionar QR direto para WhatsApp.">
+  <div class="s24-left">
+    <div class="s24-top">
+      <div class="s24-eyebrow">callback da abertura</div>
+      <div class="s24-headline">"Não foi definida pelas <em>linguagens</em> que dominei,<br>mas pelos <em>problemas</em> que aprendi a resolver."</div>
+    </div>
+    <div class="s24-thanks">Não despreze<br>nenhuma fase<br>da sua <em>jornada</em>.</div>
+    <div class="s24-bottom">
+      <div class="s24-rule"></div>
+      <div class="s24-contacts">
+        <div class="s24-contact"><div class="s24-contact-label">site</div><div class="s24-contact-val">brunopinha.com</div></div>
+        <div class="s24-contact"><div class="s24-contact-label">linkedin</div><div class="s24-contact-val">/in/brunopinha7</div></div>
+        <div class="s24-contact"><div class="s24-contact-label">whatsapp</div><div class="s24-contact-val">(44) 99185-7884</div></div>
+        <div class="s24-contact"><div class="s24-contact-label">e-mail</div><div class="s24-contact-val">brunopinha@msn.com</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="s24-right">
+    <div class="s24-qr-frame">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&amp;margin=0&amp;data=https%3A%2F%2Fwa.me%2F5544991857884" alt="QR — WhatsApp Bruno">
+      <div class="s24-qr-caption">scan &nbsp;→&nbsp; whatsapp</div>
+    </div>
+    <div class="s24-logo">
+      <img src="fotos/pesocam/pesocam-logo-branca-fundo-transparente.png" alt="PesoCam">
+      <div class="s24-logo-tag">fundador</div>
     </div>
   </div>
 </div>
 
 </div><!-- /deck -->
 
-<nav class="nav">
-  <button class="nav-btn" id="pb">←</button>
-  <span class="nav-ctr" id="ctr">1 / 24</span>
-  <button class="nav-btn" id="nb">→</button>
-</nav>
-
 <script>
-// ── QR CODE ──
-window.addEventListener('load', () => {
-  try {
-    new QRCode(document.getElementById("qrcode"), {
-      text: "https://wa.me/5544991857884",
-      width: 140, height: 140,
-      colorDark: "#000000", colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
-  } catch(e) {
-    document.getElementById("qrcode").innerHTML =
-      '<div style="width:140px;height:140px;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:11px;color:#333;text-align:center;padding:10px">QR Code<br>wa.me/5544991857884</div>';
-  }
-});
-
-// ── SLIDES ──
 const slides = document.querySelectorAll('.slide');
-const total = slides.length;
-let cur = 0;
-let notesOn = false;
+const total  = slides.length;
+let cur = 0, notesOn = false;
 
-const prog = document.getElementById('prog');
-const ctr  = document.getElementById('ctr');
-const np   = document.getElementById('npanel');
-const nb   = document.getElementById('nbtn');
+const prog  = document.getElementById('prog');
+const ctr   = document.getElementById('ctr');
+const np    = document.getElementById('npanel');
+const nbtn  = document.getElementById('nbtn');
 
 function goTo(idx) {
   if (idx < 0 || idx >= total) return;
-  const old = cur;
-  slides[old].classList.remove('active');
-  slides[old].classList.add('exit');
-  setTimeout(() => slides[old].classList.remove('exit'), 560);
+  slides[cur].classList.remove('active');
   cur = idx;
   slides[cur].classList.add('active');
-
   ctr.textContent = `${cur + 1} / ${total}`;
   prog.style.width = `${((cur + 1) / total) * 100}%`;
-
-  // Notes
   const note = slides[cur].dataset.notes || '';
   np.innerHTML = note
     ? `<strong>Notas do apresentador:</strong><br><br>${note}`
-    : '<span style="color:var(--border)">Sem notas para este slide.</span>';
-
-  // Re-trigger stack animations
-  slides[cur].querySelectorAll('.stack-layer').forEach((l, i) => {
-    l.style.animation = 'none';
-    l.style.opacity = '0';
-    l.style.transform = 'translateY(18px)';
-    setTimeout(() => { l.style.animation = `fadeUp .4s ${i * .1}s forwards`; }, 30);
-  });
+    : '<span style="opacity:.3">Sem notas para este slide.</span>';
 }
 
-document.getElementById('nb').onclick = () => goTo(cur + 1);
-document.getElementById('pb').onclick = () => goTo(cur - 1);
-
-nb.onclick = () => {
+nbtn.onclick = () => {
   notesOn = !notesOn;
   np.classList.toggle('on', notesOn);
-  nb.textContent = notesOn ? 'fechar [N]' : 'notas [N]';
+  nbtn.textContent = notesOn ? 'fechar [N]' : 'notas [N]';
 };
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(cur+1); }
-  if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(cur-1); }
-  if (e.key === 'n' || e.key === 'N') document.getElementById('nbtn').onclick();
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(cur - 1); }
+  if (e.key === 'n' || e.key === 'N') nbtn.onclick();
   if (e.key === 'Home') goTo(0);
-  if (e.key === 'End')  goTo(total-1);
+  if (e.key === 'End')  goTo(total - 1);
   if (e.key === 'f' || e.key === 'F') {
     if (!document.fullscreenElement) document.documentElement.requestFullscreen();
     else document.exitFullscreen();
@@ -1077,7 +1701,7 @@ let tx = 0;
 document.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; });
 document.addEventListener('touchend',   e => {
   const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 50) dx < 0 ? goTo(cur+1) : goTo(cur-1);
+  if (Math.abs(dx) > 50) dx < 0 ? goTo(cur + 1) : goTo(cur - 1);
 });
 
 goTo(0);
